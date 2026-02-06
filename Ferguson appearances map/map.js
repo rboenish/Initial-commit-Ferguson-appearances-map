@@ -4,7 +4,7 @@ Object.keys(countyPopulations).forEach(county => {
     const appearances = countyAppearances[county] || 0;
     const population = countyPopulations[county];
     const per100k = (appearances / population) * 100000;
-    
+
     countyData[county] = {
         name: county,
         appearances: appearances,
@@ -37,131 +37,156 @@ const svg = d3.select("#map")
 // Create tooltip
 const tooltip = d3.select("#tooltip");
 
-// Load and render Washington state map
-// Using a simplified GeoJSON for Washington counties
-const washingtonGeoJSON = {
-    "type": "FeatureCollection",
-    "features": [
-        // We'll use a simplified approach with approximate county centers for demonstration
-        // In production, you'd load actual county boundary GeoJSON
-    ]
+// Washington state FIPS code is 53
+const WA_FIPS = "53";
+
+// County name mapping from FIPS to names used in our data
+const fipsToCountyName = {
+    "53001": "Adams", "53003": "Asotin", "53005": "Benton", "53007": "Chelan",
+    "53009": "Clallam", "53011": "Clark", "53013": "Columbia", "53015": "Cowlitz",
+    "53017": "Douglas", "53019": "Ferry", "53021": "Franklin", "53023": "Garfield",
+    "53025": "Grant", "53027": "Grays Harbor", "53029": "Island", "53031": "Jefferson",
+    "53033": "King", "53035": "Kitsap", "53037": "Kittitas", "53039": "Klickitat",
+    "53041": "Lewis", "53043": "Lincoln", "53045": "Mason", "53047": "Okanogan",
+    "53049": "Pacific", "53051": "Pend Oreille", "53053": "Pierce", "53055": "San Juan",
+    "53057": "Skagit", "53059": "Skamania", "53061": "Snohomish", "53063": "Spokane",
+    "53065": "Stevens", "53067": "Thurston", "53069": "Wahkiakum", "53071": "Walla Walla",
+    "53073": "Whatcom", "53075": "Whitman", "53077": "Yakima"
 };
 
-// Since we don't have actual GeoJSON, let's create a simplified representation
-// using county positions (this would be replaced with real TopoJSON/GeoJSON in production)
+// Load US counties TopoJSON and render Washington state
+Promise.all([
+    d3.json("https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json")
+]).then(([us]) => {
+    // Filter to only Washington state counties
+    const waCounties = topojson.feature(us, us.objects.counties).features.filter(
+        d => d.id.startsWith(WA_FIPS)
+    );
 
-// Simplified county center coordinates (approximate lat/lon converted to display coordinates)
-const countyCoordinates = {
-    "Adams": [470, 210],
-    "Asotin": [680, 370],
-    "Benton": [520, 320],
-    "Chelan": [350, 180],
-    "Clallam": [130, 80],
-    "Clark": [280, 520],
-    "Columbia": [640, 370],
-    "Cowlitz": [250, 450],
-    "Douglas": [380, 200],
-    "Ferry": [520, 50],
-    "Franklin": [520, 330],
-    "Garfield": [640, 340],
-    "Grant": [450, 260],
-    "Grays Harbor": [150, 330],
-    "Island": [230, 200],
-    "Jefferson": [150, 180],
-    "King": [280, 280],
-    "Kitsap": [230, 260],
-    "Kittitas": [350, 280],
-    "Klickitat": [320, 400],
-    "Lewis": [250, 370],
-    "Lincoln": [520, 240],
-    "Mason": [200, 290],
-    "Okanogan": [380, 90],
-    "Pacific": [150, 390],
-    "Pend Oreille": [580, 50],
-    "Pierce": [250, 310],
-    "San Juan": [180, 140],
-    "Skagit": [240, 160],
-    "Skamania": [290, 450],
-    "Snohomish": [270, 220],
-    "Spokane": [580, 260],
-    "Stevens": [550, 90],
-    "Thurston": [250, 340],
-    "Wahkiakum": [210, 420],
-    "Walla Walla": [600, 340],
-    "Whatcom": [240, 100],
-    "Whitman": [620, 310],
-    "Yakima": [380, 340]
-};
+    // Get Washington state outline
+    const waState = topojson.merge(us, us.objects.counties.geometries.filter(
+        d => d.id.startsWith(WA_FIPS)
+    ));
 
-// Create county circles
-const counties = svg.selectAll("circle")
-    .data(Object.entries(countyData))
-    .enter()
-    .append("circle")
-    .attr("class", "county")
-    .attr("cx", d => countyCoordinates[d[0]] ? countyCoordinates[d[0]][0] : 0)
-    .attr("cy", d => countyCoordinates[d[0]] ? countyCoordinates[d[0]][1] : 0)
-    .attr("r", d => Math.max(15, Math.sqrt(d[1].appearances) * 10))
-    .attr("fill", d => d[1].appearances > 0 ? colorScale(d[1].per100k) : "#e5e5e5")
-    .attr("stroke", "#333")
-    .attr("stroke-width", 1.5)
-    .on("mouseover", function(event, d) {
-        const countyInfo = d[1];
-        const countyAppearancesList = appearances.filter(a => a.county === d[0]);
-        
-        let tooltipHTML = `<h3>${d[0]} County</h3>`;
-        tooltipHTML += `<div class="stat"><strong>Appearances:</strong> ${countyInfo.appearances}</div>`;
-        tooltipHTML += `<div class="stat"><strong>Population:</strong> ${countyInfo.population.toLocaleString()}</div>`;
-        tooltipHTML += `<div class="stat"><strong>Per 100k residents:</strong> ${countyInfo.per100k.toFixed(2)}</div>`;
-        
-        if (countyAppearancesList.length > 0) {
-            tooltipHTML += `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #444;">`;
-            tooltipHTML += `<strong>Recent appearances:</strong>`;
-            countyAppearancesList.slice(0, 3).forEach(app => {
-                tooltipHTML += `<div style="margin-top: 4px; font-size: 12px;">• ${app.town} - ${app.date}</div>`;
-            });
-            if (countyAppearancesList.length > 3) {
-                tooltipHTML += `<div style="margin-top: 4px; font-size: 12px; font-style: italic;">...and ${countyAppearancesList.length - 3} more</div>`;
+    // Create projection centered on Washington state
+    const projection = d3.geoMercator()
+        .center([-120.5, 47.4])
+        .scale(4500)
+        .translate([width / 2, height / 2]);
+
+    const path = d3.geoPath().projection(projection);
+
+    // Draw state background
+    svg.append("path")
+        .datum(waState)
+        .attr("class", "state-outline")
+        .attr("d", path)
+        .attr("fill", "#f0f4f8")
+        .attr("stroke", "#1e3a8a")
+        .attr("stroke-width", 2);
+
+    // Draw county boundaries with fill based on appearances
+    svg.selectAll("path.county")
+        .data(waCounties)
+        .enter()
+        .append("path")
+        .attr("class", "county")
+        .attr("d", path)
+        .attr("fill", d => {
+            const countyName = fipsToCountyName[d.id];
+            const data = countyData[countyName];
+            if (data && data.appearances > 0) {
+                return colorScale(data.per100k);
             }
-            tooltipHTML += `</div>`;
-        }
-        
-        tooltip.html(tooltipHTML)
-            .style("opacity", 1)
-            .style("left", (event.pageX + 10) + "px")
-            .style("top", (event.pageY - 10) + "px");
-            
-        d3.select(this).attr("opacity", 0.7);
-    })
-    .on("mouseout", function() {
-        tooltip.style("opacity", 0);
-        d3.select(this).attr("opacity", 1);
-    });
+            return "#e8eef4";
+        })
+        .attr("stroke", "#999")
+        .attr("stroke-width", 0.5)
+        .on("mouseover", function(event, d) {
+            const countyName = fipsToCountyName[d.id];
+            const countyInfo = countyData[countyName];
 
-// Add county labels
-svg.selectAll("text.county-label")
-    .data(Object.entries(countyData).filter(d => d[1].appearances > 0))
-    .enter()
-    .append("text")
-    .attr("class", "county-label")
-    .attr("x", d => countyCoordinates[d[0]] ? countyCoordinates[d[0]][0] : 0)
-    .attr("y", d => countyCoordinates[d[0]] ? countyCoordinates[d[0]][1] + 4 : 0)
-    .attr("text-anchor", "middle")
-    .attr("font-size", "11px")
-    .attr("font-weight", "600")
-    .attr("fill", d => d[1].per100k > maxPer100k * 0.5 ? "white" : "#333")
-    .attr("pointer-events", "none")
-    .text(d => d[1].appearances);
+            if (!countyInfo) return;
 
-// Add title
-svg.append("text")
-    .attr("x", width / 2)
-    .attr("y", 30)
-    .attr("text-anchor", "middle")
-    .attr("font-size", "18px")
-    .attr("font-weight", "700")
-    .attr("fill", "#1e3a8a")
-    .text("Governor Ferguson Appearances by County (Heat Map)");
+            const countyAppearancesList = appearances.filter(a => a.county === countyName);
+
+            let tooltipHTML = `<h3>${countyName} County</h3>`;
+            tooltipHTML += `<div class="stat"><strong>Appearances:</strong> ${countyInfo.appearances}</div>`;
+            tooltipHTML += `<div class="stat"><strong>Population:</strong> ${countyInfo.population.toLocaleString()}</div>`;
+            tooltipHTML += `<div class="stat"><strong>Per 100k residents:</strong> ${countyInfo.per100k.toFixed(2)}</div>`;
+
+            if (countyAppearancesList.length > 0) {
+                tooltipHTML += `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #444;">`;
+                tooltipHTML += `<strong>Recent appearances:</strong>`;
+                countyAppearancesList.slice(0, 3).forEach(app => {
+                    tooltipHTML += `<div style="margin-top: 4px; font-size: 12px;">• ${app.town} - ${app.date}</div>`;
+                });
+                if (countyAppearancesList.length > 3) {
+                    tooltipHTML += `<div style="margin-top: 4px; font-size: 12px; font-style: italic;">...and ${countyAppearancesList.length - 3} more</div>`;
+                }
+                tooltipHTML += `</div>`;
+            }
+
+            tooltip.html(tooltipHTML)
+                .style("opacity", 1)
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 10) + "px");
+
+            d3.select(this)
+                .attr("stroke", "#1e3a8a")
+                .attr("stroke-width", 2);
+        })
+        .on("mouseout", function() {
+            tooltip.style("opacity", 0);
+            d3.select(this)
+                .attr("stroke", "#999")
+                .attr("stroke-width", 0.5);
+        });
+
+    // Add county labels for counties with appearances
+    svg.selectAll("text.county-label")
+        .data(waCounties.filter(d => {
+            const countyName = fipsToCountyName[d.id];
+            return countyData[countyName] && countyData[countyName].appearances > 0;
+        }))
+        .enter()
+        .append("text")
+        .attr("class", "county-label")
+        .attr("transform", d => `translate(${path.centroid(d)})`)
+        .attr("text-anchor", "middle")
+        .attr("dy", "0.35em")
+        .attr("font-size", "10px")
+        .attr("font-weight", "600")
+        .attr("fill", d => {
+            const countyName = fipsToCountyName[d.id];
+            const data = countyData[countyName];
+            return data.per100k > maxPer100k * 0.5 ? "white" : "#333";
+        })
+        .attr("pointer-events", "none")
+        .text(d => {
+            const countyName = fipsToCountyName[d.id];
+            return countyData[countyName].appearances;
+        });
+
+    // Add title
+    svg.append("text")
+        .attr("x", width / 2)
+        .attr("y", 30)
+        .attr("text-anchor", "middle")
+        .attr("font-size", "18px")
+        .attr("font-weight", "700")
+        .attr("fill", "#1e3a8a")
+        .text("Governor Ferguson Appearances by County (Heat Map)");
+}).catch(error => {
+    console.error("Error loading map data:", error);
+    // Fallback: show error message
+    svg.append("text")
+        .attr("x", width / 2)
+        .attr("y", height / 2)
+        .attr("text-anchor", "middle")
+        .attr("fill", "red")
+        .text("Error loading map. Please check your internet connection.");
+});
 
 // Create legend
 const legendData = [
