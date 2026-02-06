@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Governor Bob Ferguson Public Appearances 2025-2026</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://d3js.org/topojson.v3.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .map-container {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .county {
+            stroke: #333;
+            stroke-width: 1.5;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        
+        .county:hover {
+            opacity: 0.7;
+            stroke-width: 2.5;
+        }
+        
+        .tooltip {
+            position: absolute;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            border-radius: 6px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            max-width: 350px;
+            font-size: 14px;
+            line-height: 1.5;
+            z-index: 1000;
+        }
+        
+        .tooltip h3 {
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: #60a5fa;
+        }
+        
+        .tooltip .stat {
+            margin: 4px 0;
+            font-size: 13px;
+        }
+        
+        .timeline-container {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .timeline-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #1e3a8a;
+        }
+        
+        .bar {
+            fill: #3b82f6;
+            transition: fill 0.2s;
+        }
+        
+        .bar:hover {
+            fill: #1e3a8a;
+        }
+        
+        .axis {
+            font-size: 12px;
+        }
+        
+        .axis path,
+        .axis line {
+            stroke: #999;
+        }
+        
+        .legend {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-color {
+            width: 40px;
+            height: 20px;
+            border: 1px solid #333;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .data-note {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .grid line {
+            stroke: #e5e5e5;
+            stroke-opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Governor Bob Ferguson Public Appearances</h1>
+            <p class="subtitle">January 2025 - February 2026 | Interactive County Map</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="data-note">
+            <strong>Note:</strong> This map shows documented public appearances based on news releases, media coverage, and TVW recordings. 
+            Governor Ferguson's office has been criticized for not consistently releasing public schedules, so this represents a minimum count of actual appearances.
+        </div>
+        
+        <div class="map-container">
+            <div id="map"></div>
+            <div class="legend" id="legend"></div>
+        </div>
+        
+        <div class="timeline-container">
+            <h2 class="timeline-title">Monthly Appearance Timeline</h2>
+            <div id="timeline"></div>
+        </div>
+    </div>
+    
+    <div class="tooltip" id="tooltip"></div>
+    
+    <footer>
+        <p>Data compiled from governor.wa.gov, TVW, Washington State Standard, and local news sources</p>
+        <p>Created February 2026</p>
+    </footer>
+    
+    <script src="data.js"></script>
+    <script src="map.js"></script>
+</body>
+</html>
