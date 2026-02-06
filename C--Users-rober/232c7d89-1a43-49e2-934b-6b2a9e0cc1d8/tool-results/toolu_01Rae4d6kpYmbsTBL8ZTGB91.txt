@@ -1,0 +1,39 @@
+The file C:/Users/rober/PycharmProjects/Claude_intro/space_invaders.py has been updated. Here's the result of running `cat -n` on a snippet of the edited file:
+    42→    "jd_vance.jpg"
+    43→]
+    44→
+    45→
+    46→def create_hammer_sickle_background(width, height):
+    47→    """Create a faded hammer and sickle background"""
+    48→    surface = pygame.Surface((width, height))
+    49→    surface.fill(BLACK)
+    50→
+    51→    # Faded dark red color for the symbol
+    52→    FADED_RED = (40, 10, 10)
+    53→
+    54→    center_x, center_y = width // 2, height // 2
+    55→
+    56→    # Draw sickle (curved arc)
+    57→    sickle_radius = 120
+    58→    sickle_thickness = 15
+    59→    for angle in range(-60, 120):
+    60→        rad = angle * 3.14159 / 180
+    61→        import math
+    62→        x = center_x - 40 + int(sickle_radius * math.cos(rad))
+    63→        y = center_y - 20 + int(sickle_radius * math.sin(rad))
+    64→        pygame.draw.circle(surface, FADED_RED, (x, y), sickle_thickness // 2)
+    65→
+    66→    # Draw hammer handle
+    67→    pygame.draw.rect(surface, FADED_RED, (center_x + 20, center_y - 100, 12, 160))
+    68→
+    69→    # Draw hammer head
+    70→    pygame.draw.rect(surface, FADED_RED, (center_x - 15, center_y - 115, 70, 25))
+    71→
+    72→    return surface
+    73→
+    74→
+    75→def load_and_scale_image(image_path, width, height, fallback_color=None):
+    76→    """Load an image and scale it, or create a colored surface if not found"""
+    77→    try:
+    78→        if os.path.exists(image_path):
+    79→            image = pygame.image.load(image_path)

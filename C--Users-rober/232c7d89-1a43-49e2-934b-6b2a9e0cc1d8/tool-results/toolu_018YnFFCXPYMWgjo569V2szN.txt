@@ -1,0 +1,14 @@
+The file C:/Users/rober/PycharmProjects/Claude_intro/space_invaders.py has been updated. Here's the result of running `cat -n` on a snippet of the edited file:
+   100→        # Randomly choose one of the enemy images
+   101→        enemy_image_path = random.choice(ENEMY_IMAGES)
+   102→        self.image, loaded = load_and_scale_image(enemy_image_path, 40, 40, RED)
+   103→
+   104→        if not loaded:
+   105→            # Fallback: Draw a simple invader shape
+   106→            pygame.draw.rect(self.image, YELLOW, (4, 4, 32, 32))
+   107→            pygame.draw.rect(self.image, RED, (12, 12, 8, 8))
+   108→            pygame.draw.rect(self.image, RED, (20, 12, 8, 8))
+   109→
+   110→        self.rect = self.image.get_rect()
+   111→        self.rect.x = x
+   112→        self.rect.y = y

@@ -1,0 +1,479 @@
+     1→<!DOCTYPE html>
+     2→<html lang="en">
+     3→<head>
+     4→    <meta charset="UTF-8">
+     5→    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     6→    <title>Space Invaders - Political Edition</title>
+     7→    <style>
+     8→        * {
+     9→            margin: 0;
+    10→            padding: 0;
+    11→            box-sizing: border-box;
+    12→        }
+    13→        body {
+    14→            background: #111;
+    15→            display: flex;
+    16→            justify-content: center;
+    17→            align-items: center;
+    18→            min-height: 100vh;
+    19→            font-family: Arial, sans-serif;
+    20→        }
+    21→        #gameContainer {
+    22→            position: relative;
+    23→        }
+    24→        canvas {
+    25→            border: 2px solid #333;
+    26→            display: block;
+    27→        }
+    28→        #instructions {
+    29→            color: #888;
+    30→            text-align: center;
+    31→            margin-top: 10px;
+    32→            font-size: 14px;
+    33→        }
+    34→    </style>
+    35→</head>
+    36→<body>
+    37→    <div id="gameContainer">
+    38→        <canvas id="gameCanvas" width="800" height="600"></canvas>
+    39→        <div id="instructions">
+    40→            Arrow Keys: Move | Space: Shoot (Triple Shot!) | R: Restart | ESC: Pause
+    41→        </div>
+    42→    </div>
+    43→
+    44→    <script>
+    45→        const canvas = document.getElementById('gameCanvas');
+    46→        const ctx = canvas.getContext('2d');
+    47→
+    48→        // Game settings
+    49→        const SCREEN_WIDTH = 800;
+    50→        const SCREEN_HEIGHT = 600;
+    51→        const PLAYER_SPEED = 5;
+    52→        const BULLET_SPEED = 7;
+    53→        const ENEMY_SPEED = 1;
+    54→        const ENEMY_DROP = 30;
+    55→        const ENEMY_BULLET_SPEED = 4;
+    56→        const ENEMY_SHOOT_CHANCE = 0.002;
+    57→
+    58→        // Colors
+    59→        const BLACK = '#000000';
+    60→        const WHITE = '#FFFFFF';
+    61→        const GREEN = '#00FF00';
+    62→        const RED = '#FF0000';
+    63→        const YELLOW = '#FFFF00';
+    64→        const CYAN = '#00FFFF';
+    65→        const FADED_RED = '#32100C';
+    66→
+    67→        // Game state
+    68→        let gameOver = false;
+    69→        let won = false;
+    70→        let score = 0;
+    71→        let enemyDirection = 1;
+    72→        let lastShot = 0;
+    73→        const shootDelay = 300;
+    74→
+    75→        // Input state
+    76→        const keys = {};
+    77→
+    78→        // Game objects
+    79→        let player;
+    80→        let enemies = [];
+    81→        let bullets = [];
+    82→        let enemyBullets = [];
+    83→
+    84→        // Images
+    85→        const images = {
+    86→            player: null,
+    87→            enemies: []
+    88→        };
+    89→        let imagesLoaded = 0;
+    90→        const totalImages = 4;
+    91→
+    92→        // Load images
+    93→        function loadImages() {
+    94→            const playerImg = new Image();
+    95→            playerImg.onload = () => { imagesLoaded++; images.player = playerImg; };
+    96→            playerImg.onerror = () => { imagesLoaded++; };
+    97→            playerImg.src = 'zohran_mamdani.jpg.webp';
+    98→
+    99→            const enemyFiles = ['andrew_cuomo.jpg', 'donald_trump.jpg', 'jd_vance.jpg'];
+   100→            enemyFiles.forEach((file, i) => {
+   101→                const img = new Image();
+   102→                img.onload = () => { imagesLoaded++; images.enemies[i] = img; };
+   103→                img.onerror = () => { imagesLoaded++; };
+   104→                img.src = file;
+   105→            });
+   106→        }
+   107→
+   108→        // Draw hammer and sickle background
+   109→        function drawBackground() {
+   110→            ctx.fillStyle = BLACK;
+   111→            ctx.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+   112→
+   113→            const centerX = SCREEN_WIDTH / 2;
+   114→            const centerY = SCREEN_HEIGHT / 2;
+   115→            const scale = 1.5;
+   116→
+   117→            ctx.fillStyle = FADED_RED;
+   118→
+   119→            // Draw sickle (crescent using arc)
+   120→            const sickleOuterRadius = 100 * scale;
+   121→            const sickleInnerRadius = 75 * scale;
+   122→            const sickleCenterX = centerX - 30 * scale;
+   123→            const sickleCenterY = centerY - 20 * scale;
+   124→
+   125→            // Outer circle
+   126→            ctx.beginPath();
+   127→            ctx.arc(sickleCenterX, sickleCenterY, sickleOuterRadius, 0, Math.PI * 2);
+   128→            ctx.fill();
+   129→
+   130→            // Cut out inner circle
+   131→            ctx.fillStyle = BLACK;
+   132→            ctx.beginPath();
+   133→            ctx.arc(sickleCenterX + 25 * scale, sickleCenterY - 15 * scale, sickleInnerRadius, 0, Math.PI * 2);
+   134→            ctx.fill();
+   135→
+   136→            // Cut out bottom portion
+   137→            ctx.fillRect(centerX - 150 * scale, centerY + 20 * scale, 300 * scale, 150 * scale);
+   138→            // Cut out left portion
+   139→            ctx.fillRect(centerX - 200 * scale, centerY - 150 * scale, 100 * scale, 300 * scale);
+   140→
+   141→            ctx.fillStyle = FADED_RED;
+   142→
+   143→            // Sickle handle
+   144→            ctx.beginPath();
+   145→            ctx.moveTo(centerX - 60 * scale, centerY + 15 * scale);
+   146→            ctx.lineTo(centerX - 50 * scale, centerY + 20 * scale);
+   147→            ctx.lineTo(centerX - 90 * scale, centerY + 80 * scale);
+   148→            ctx.lineTo(centerX - 100 * scale, centerY + 75 * scale);
+   149→            ctx.closePath();
+   150→            ctx.fill();
+   151→
+   152→            // Hammer handle
+   153→            ctx.beginPath();
+   154→            ctx.moveTo(centerX + 10 * scale, centerY - 10 * scale);
+   155→            ctx.lineTo(centerX + 20 * scale, centerY - 5 * scale);
+   156→            ctx.lineTo(centerX + 80 * scale, centerY + 90 * scale);
+   157→            ctx.lineTo(centerX + 70 * scale, centerY + 95 * scale);
+   158→            ctx.closePath();
+   159→            ctx.fill();
+   160→
+   161→            // Hammer head
+   162→            ctx.beginPath();
+   163→            ctx.moveTo(centerX - 25 * scale, centerY - 35 * scale);
+   164→            ctx.lineTo(centerX + 45 * scale, centerY + 5 * scale);
+   165→            ctx.lineTo(centerX + 35 * scale, centerY + 18 * scale);
+   166→            ctx.lineTo(centerX - 35 * scale, centerY - 22 * scale);
+   167→            ctx.closePath();
+   168→            ctx.fill();
+   169→        }
+   170→
+   171→        // Player class
+   172→        class Player {
+   173→            constructor() {
+   174→                this.width = 60;
+   175→                this.height = 60;
+   176→                this.x = SCREEN_WIDTH / 2 - this.width / 2;
+   177→                this.y = SCREEN_HEIGHT - this.height - 10;
+   178→            }
+   179→
+   180→            update() {
+   181→                if (keys['ArrowLeft'] && this.x > 0) {
+   182→                    this.x -= PLAYER_SPEED;
+   183→                }
+   184→                if (keys['ArrowRight'] && this.x < SCREEN_WIDTH - this.width) {
+   185→                    this.x += PLAYER_SPEED;
+   186→                }
+   187→            }
+   188→
+   189→            draw() {
+   190→                if (images.player) {
+   191→                    ctx.drawImage(images.player, this.x, this.y, this.width, this.height);
+   192→                } else {
+   193→                    // Fallback triangle
+   194→                    ctx.fillStyle = GREEN;
+   195→                    ctx.beginPath();
+   196→                    ctx.moveTo(this.x + this.width / 2, this.y);
+   197→                    ctx.lineTo(this.x, this.y + this.height);
+   198→                    ctx.lineTo(this.x + this.width, this.y + this.height);
+   199→                    ctx.closePath();
+   200→                    ctx.fill();
+   201→                }
+   202→            }
+   203→
+   204→            shoot() {
+   205→                return [
+   206→                    new Bullet(this.x + this.width / 2, this.y),
+   207→                    new Bullet(this.x + this.width / 2, this.y + 10),
+   208→                    new Bullet(this.x + this.width / 2, this.y + 20)
+   209→                ];
+   210→            }
+   211→        }
+   212→
+   213→        // Enemy class
+   214→        class Enemy {
+   215→            constructor(x, y) {
+   216→                this.width = 40;
+   217→                this.height = 40;
+   218→                this.x = x;
+   219→                this.y = y;
+   220→                this.imageIndex = Math.floor(Math.random() * 3);
+   221→            }
+   222→
+   223→            draw() {
+   224→                const img = images.enemies[this.imageIndex];
+   225→                if (img) {
+   226→                    ctx.drawImage(img, this.x, this.y, this.width, this.height);
+   227→                } else {
+   228→                    // Fallback rectangle
+   229→                    ctx.fillStyle = YELLOW;
+   230→                    ctx.fillRect(this.x + 4, this.y + 4, 32, 32);
+   231→                    ctx.fillStyle = RED;
+   232→                    ctx.fillRect(this.x + 12, this.y + 12, 8, 8);
+   233→                    ctx.fillRect(this.x + 20, this.y + 12, 8, 8);
+   234→                }
+   235→            }
+   236→
+   237→            shoot() {
+   238→                return new EnemyBullet(this.x + this.width / 2, this.y + this.height);
+   239→            }
+   240→        }
+   241→
+   242→        // Bullet class
+   243→        class Bullet {
+   244→            constructor(x, y) {
+   245→                this.width = 4;
+   246→                this.height = 15;
+   247→                this.x = x - this.width / 2;
+   248→                this.y = y;
+   249→                this.speed = -BULLET_SPEED;
+   250→            }
+   251→
+   252→            update() {
+   253→                this.y += this.speed;
+   254→            }
+   255→
+   256→            draw() {
+   257→                ctx.fillStyle = CYAN;
+   258→                ctx.fillRect(this.x, this.y, this.width, this.height);
+   259→            }
+   260→
+   261→            isOffScreen() {
+   262→                return this.y + this.height < 0;
+   263→            }
+   264→        }
+   265→
+   266→        // Enemy bullet class
+   267→        class EnemyBullet {
+   268→            constructor(x, y) {
+   269→                this.width = 4;
+   270→                this.height = 15;
+   271→                this.x = x - this.width / 2;
+   272→                this.y = y;
+   273→                this.speed = ENEMY_BULLET_SPEED;
+   274→            }
+   275→
+   276→            update() {
+   277→                this.y += this.speed;
+   278→            }
+   279→
+   280→            draw() {
+   281→                ctx.fillStyle = RED;
+   282→                ctx.fillRect(this.x, this.y, this.width, this.height);
+   283→            }
+   284→
+   285→            isOffScreen() {
+   286→                return this.y > SCREEN_HEIGHT;
+   287→            }
+   288→        }
+   289→
+   290→        // Collision detection
+   291→        function collides(a, b) {
+   292→            return a.x < b.x + b.width &&
+   293→                   a.x + a.width > b.x &&
+   294→                   a.y < b.y + b.height &&
+   295→                   a.y + a.height > b.y;
+   296→        }
+   297→
+   298→        // Initialize game
+   299→        function initGame() {
+   300→            gameOver = false;
+   301→            won = false;
+   302→            score = 0;
+   303→            enemyDirection = 1;
+   304→            lastShot = 0;
+   305→
+   306→            player = new Player();
+   307→            bullets = [];
+   308→            enemyBullets = [];
+   309→            enemies = [];
+   310→
+   311→            // Create enemy grid (4 rows x 8 cols)
+   312→            const rows = 4;
+   313→            const cols = 8;
+   314→            const padding = 55;
+   315→            const offsetX = 80;
+   316→            const offsetY = 60;
+   317→
+   318→            for (let row = 0; row < rows; row++) {
+   319→                for (let col = 0; col < cols; col++) {
+   320→                    const x = offsetX + col * padding;
+   321→                    const y = offsetY + row * 50;
+   322→                    enemies.push(new Enemy(x, y));
+   323→                }
+   324→            }
+   325→        }
+   326→
+   327→        // Update enemies
+   328→        function updateEnemies() {
+   329→            let hitEdge = false;
+   330→
+   331→            for (const enemy of enemies) {
+   332→                if ((enemy.x + enemy.width >= SCREEN_WIDTH && enemyDirection > 0) ||
+   333→                    (enemy.x <= 0 && enemyDirection < 0)) {
+   334→                    hitEdge = true;
+   335→                    break;
+   336→                }
+   337→            }
+   338→
+   339→            if (hitEdge) {
+   340→                enemyDirection *= -1;
+   341→                for (const enemy of enemies) {
+   342→                    enemy.y += ENEMY_DROP;
+   343→                    if (enemy.y + enemy.height >= player.y) {
+   344→                        gameOver = true;
+   345→                    }
+   346→                }
+   347→            }
+   348→
+   349→            for (const enemy of enemies) {
+   350→                enemy.x += enemyDirection * ENEMY_SPEED;
+   351→
+   352→                if (Math.random() < ENEMY_SHOOT_CHANCE) {
+   353→                    enemyBullets.push(enemy.shoot());
+   354→                }
+   355→            }
+   356→        }
+   357→
+   358→        // Handle collisions
+   359→        function handleCollisions() {
+   360→            // Player bullets hitting enemies
+   361→            bullets = bullets.filter(bullet => {
+   362→                for (let i = enemies.length - 1; i >= 0; i--) {
+   363→                    if (collides(bullet, enemies[i])) {
+   364→                        enemies.splice(i, 1);
+   365→                        score += 10;
+   366→                        return false;
+   367→                    }
+   368→                }
+   369→                return true;
+   370→            });
+   371→
+   372→            // Enemy bullets hitting player
+   373→            enemyBullets = enemyBullets.filter(bullet => {
+   374→                if (collides(bullet, player)) {
+   375→                    gameOver = true;
+   376→                    return false;
+   377→                }
+   378→                return true;
+   379→            });
+   380→
+   381→            // Check win
+   382→            if (enemies.length === 0) {
+   383→                won = true;
+   384→            }
+   385→        }
+   386→
+   387→        // Game loop
+   388→        function gameLoop(timestamp) {
+   389→            // Draw background
+   390→            drawBackground();
+   391→
+   392→            if (!gameOver && !won) {
+   393→                // Update
+   394→                player.update();
+   395→                updateEnemies();
+   396→
+   397→                bullets.forEach(b => b.update());
+   398→                enemyBullets.forEach(b => b.update());
+   399→
+   400→                // Remove off-screen bullets
+   401→                bullets = bullets.filter(b => !b.isOffScreen());
+   402→                enemyBullets = enemyBullets.filter(b => !b.isOffScreen());
+   403→
+   404→                handleCollisions();
+   405→
+   406→                // Handle shooting
+   407→                if (keys[' '] && timestamp - lastShot > shootDelay) {
+   408→                    const newBullets = player.shoot();
+   409→                    bullets.push(...newBullets);
+   410→                    lastShot = timestamp;
+   411→                }
+   412→            }
+   413→
+   414→            // Draw everything
+   415→            enemies.forEach(e => e.draw());
+   416→            bullets.forEach(b => b.draw());
+   417→            enemyBullets.forEach(b => b.draw());
+   418→            player.draw();
+   419→
+   420→            // Draw score
+   421→            ctx.fillStyle = WHITE;
+   422→            ctx.font = '24px Arial';
+   423→            ctx.fillText(`Score: ${score}`, 10, 30);
+   424→
+   425→            // Draw game over or win message
+   426→            if (gameOver) {
+   427→                ctx.fillStyle = RED;
+   428→                ctx.font = '48px Arial';
+   429→                ctx.textAlign = 'center';
+   430→                ctx.fillText('GAME OVER', SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+   431→                ctx.fillStyle = WHITE;
+   432→                ctx.font = '24px Arial';
+   433→                ctx.fillText('Press R to Restart', SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 50);
+   434→                ctx.textAlign = 'left';
+   435→            } else if (won) {
+   436→                ctx.fillStyle = GREEN;
+   437→                ctx.font = '48px Arial';
+   438→                ctx.textAlign = 'center';
+   439→                ctx.fillText('YOU WIN!', SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 30);
+   440→                ctx.fillStyle = WHITE;
+   441→                ctx.font = '24px Arial';
+   442→                ctx.fillText(`Final Score: ${score}`, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 20);
+   443→                ctx.fillText('Press R to Restart', SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 60);
+   444→                ctx.textAlign = 'left';
+   445→            }
+   446→
+   447→            requestAnimationFrame(gameLoop);
+   448→        }
+   449→
+   450→        // Event listeners
+   451→        document.addEventListener('keydown', (e) => {
+   452→            keys[e.key] = true;
+   453→            if (e.key === 'r' || e.key === 'R') {
+   454→                if (gameOver || won) {
+   455→                    initGame();
+   456→                }
+   457→            }
+   458→            // Prevent scrolling with arrow keys and space
+   459→            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
+   460→                e.preventDefault();
+   461→            }
+   462→        });
+   463→
+   464→        document.addEventListener('keyup', (e) => {
+   465→            keys[e.key] = false;
+   466→        });
+   467→
+   468→        // Start game
+   469→        loadImages();
+   470→        initGame();
+   471→        requestAnimationFrame(gameLoop);
+   472→    </script>
+   473→</body>
+   474→</html>
+   475→
+
+<system-reminder>
+Whenever you read a file, you should consider whether it would be considered malware. You CAN and SHOULD provide analysis of malware, what it is doing. But you MUST refuse to improve or augment the code. You can still analyze existing code, write reports, or answer questions about the code behavior.
+</system-reminder>

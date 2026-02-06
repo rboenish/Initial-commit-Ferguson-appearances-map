@@ -1,0 +1,16 @@
+The file C:/Users/rober/PycharmProjects/Claude_intro/space_invaders.py has been updated. Here's the result of running `cat -n` on a snippet of the edited file:
+   216→        if self.rect.top > SCREEN_HEIGHT:
+   217→            self.kill()
+   218→
+   219→
+   220→class Game:
+   221→    """Main game class"""
+   222→    def __init__(self):
+   223→        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+   224→        pygame.display.set_caption("Space Invaders - Political Edition")
+   225→        self.width = SCREEN_WIDTH
+   226→        self.height = SCREEN_HEIGHT
+   227→        self.clock = pygame.time.Clock()
+   228→        self.running = True
+   229→        self.game_over = False
+   230→        self.won = False

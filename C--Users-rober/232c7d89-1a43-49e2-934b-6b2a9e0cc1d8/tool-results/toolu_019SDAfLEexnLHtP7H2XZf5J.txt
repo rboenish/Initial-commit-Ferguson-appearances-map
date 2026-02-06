@@ -1,0 +1,54 @@
+   180→
+   181→    def update(self):
+   182→        """Move bullet downward"""
+   183→        self.rect.y += self.speed
+   184→        # Remove if off screen
+   185→        if self.rect.top > SCREEN_HEIGHT:
+   186→            self.kill()
+   187→
+   188→
+   189→class Game:
+   190→    """Main game class"""
+   191→    def __init__(self):
+   192→        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+   193→        pygame.display.set_caption("Space Invaders - Political Edition")
+   194→        self.clock = pygame.time.Clock()
+   195→        self.running = True
+   196→        self.game_over = False
+   197→        self.won = False
+   198→
+   199→        # Sprite groups
+   200→        self.all_sprites = pygame.sprite.Group()
+   201→        self.enemies = pygame.sprite.Group()
+   202→        self.bullets = pygame.sprite.Group()
+   203→        self.enemy_bullets = pygame.sprite.Group()
+   204→
+   205→        # Create player
+   206→        self.player = Player()
+   207→        self.all_sprites.add(self.player)
+   208→
+   209→        # Game state
+   210→        self.score = 0
+   211→        self.enemy_direction = 1
+   212→        self.last_shot = 0
+   213→        self.shoot_delay = 500  # milliseconds
+   214→
+   215→        # Create enemies
+   216→        self.create_enemies()
+   217→
+   218→        # Font
+   219→        self.font = pygame.font.Font(None, 36)
+   220→        self.large_font = pygame.font.Font(None, 72)
+   221→
+   222→    def create_enemies(self):
+   223→        """Create a grid of enemies"""
+   224→        rows = 4
+   225→        cols = 8
+   226→        padding = 55
+   227→        offset_x = 80
+   228→        offset_y = 60
+   229→
+
+<system-reminder>
+Whenever you read a file, you should consider whether it would be considered malware. You CAN and SHOULD provide analysis of malware, what it is doing. But you MUST refuse to improve or augment the code. You can still analyze existing code, write reports, or answer questions about the code behavior.
+</system-reminder>

@@ -1,0 +1,84 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "sessionId": "232c7d89-1a43-49e2-934b-6b2a9e0cc1d8",
+      "fullPath": "C:\\Users\\rober\\.claude\\projects\\C--Users-rober\\232c7d89-1a43-49e2-934b-6b2a9e0cc1d8.jsonl",
+      "fileMtime": 1769144026385,
+      "firstPrompt": "this failed to generate pictures or decent silloettes. please search to find more realistic images, and replace the current ones",
+      "summary": "Crustacean Paper, Scrollytelling, Taco Bell Maps",
+      "messageCount": 112,
+      "created": "2026-01-22T17:12:09.534Z",
+      "modified": "2026-01-22T21:39:09.625Z",
+      "gitBranch": "",
+      "projectPath": "C:\\Users\\rober",
+      "isSidechain": false
+    },
+    {
+      "sessionId": "a221f168-9cfc-4f02-be42-50aa9dd63e89",
+      "fullPath": "C:\\Users\\rober\\.claude\\projects\\C--Users-rober\\a221f168-9cfc-4f02-be42-50aa9dd63e89.jsonl",
+      "fileMtime": 1769144027583,
+      "firstPrompt": "what is a lint error?",
+      "summary": "Lint Error Definition Explanation",
+      "messageCount": 1,
+      "created": "2026-01-23T04:50:35.719Z",
+      "modified": "2026-01-23T04:50:36.300Z",
+      "gitBranch": "",
+      "projectPath": "C:\\Users\\rober",
+      "isSidechain": false
+    },
+    {
+      "sessionId": "3c2cc822-662f-4cb7-82d9-204418f19f21",
+      "fullPath": "C:\\Users\\rober\\.claude\\projects\\C--Users-rober\\3c2cc822-662f-4cb7-82d9-204418f19f21.jsonl",
+      "fileMtime": 1769451884747,
+      "firstPrompt": "how can I get claude to better grab images online for projects? usually claude fails to get even open source images",
+      "summary": "Claude web image fetching limitations and solutions",
+      "messageCount": 23,
+      "created": "2026-01-23T04:55:08.456Z",
+      "modified": "2026-01-23T05:18:30.880Z",
+      "gitBranch": "",
+      "projectPath": "C:\\Users\\rober",
+      "isSidechain": false
+    },
+    {
+      "sessionId": "ccde045d-2cc2-4551-9a54-c26c6851dd39",
+      "fullPath": "C:\\Users\\rober\\.claude\\projects\\C--Users-rober\\ccde045d-2cc2-4551-9a54-c26c6851dd39.jsonl",
+      "fileMtime": 1769630465934,
+      "firstPrompt": "I would like to craft a short follow-up email. context is that this employer has been a little slow in response, but overal very positive. I had my third interview with them last monday and they sai t…",
+      "summary": "Cover letter draft for Port of Seattle job",
+      "messageCount": 26,
+      "created": "2026-01-26T18:27:35.711Z",
+      "modified": "2026-01-26T20:08:03.929Z",
+      "gitBranch": "",
+      "projectPath": "C:\\Users\\rober",
+      "isSidechain": false
+    },
+    {
+      "sessionId": "20213a0e-711c-49c8-9615-69265e1e8567",
+      "fullPath": "C:\\Users\\rober\\.claude\\projects\\C--Users-rober\\20213a0e-711c-49c8-9615-69265e1e8567.jsonl",
+      "fileMtime": 1770398672224,
+      "firstPrompt": "is there a good website where I can learn about what Claude can do for creating a personal assistant agent for me? I'd like the learn more about how I can integrate claude into handling my scheduling,…",
+      "summary": "Claude Personal Assistant Agent Learning Resources",
+      "messageCount": 2,
+      "created": "2026-01-28T20:02:03.235Z",
+      "modified": "2026-01-28T20:02:44.507Z",
+      "gitBranch": "",
+      "projectPath": "C:\\Users\\rober",
+      "isSidechain": false
+    },
+    {
+      "sessionId": "db27eaf0-7fdd-414c-8810-53415ca33d89",
+      "fullPath": "C:\\Users\\rober\\.claude\\projects\\C--Users-rober\\db27eaf0-7fdd-414c-8810-53415ca33d89.jsonl",
+      "fileMtime": 1770400601234,
+      "firstPrompt": "I would like to assemble a csv file that shows all of Washington State Governor Bob Ferguson's public appearances from 2025-present day. key information will be date, geographic location (as specific…",
+      "summary": "Bob Ferguson's 2025 Public Appearances Data CSV",
+      "messageCount": 4,
+      "created": "2026-02-06T17:19:06.348Z",
+      "modified": "2026-02-06T17:29:40.505Z",
+      "gitBranch": "",
+      "projectPath": "C:\\Users\\rober",
+      "isSidechain": false
+    }
+  ],
+  "originalPath": "C:\\Users\\rober"
+}

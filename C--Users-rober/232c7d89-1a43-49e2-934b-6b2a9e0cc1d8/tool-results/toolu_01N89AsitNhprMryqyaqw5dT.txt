@@ -1,0 +1,18 @@
+On branch main
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	new file:   .idea/.gitignore
+	new file:   .idea/Claude_intro.iml
+	new file:   .idea/inspectionProfiles/profiles_settings.xml
+	new file:   .idea/misc.xml
+	new file:   .idea/modules.xml
+	new file:   .idea/vcs.xml
+	new file:   CLAUDE.md
+	new file:   README.md
+	renamed:    andrew_cuomo.jpg -> images/andrew_cuomo.jpg
+	renamed:    donald_trump.jpg -> images/donald_trump.jpg
+	renamed:    jd_vance.jpg -> images/jd_vance.jpg
+	renamed:    zohran_mamdani.jpg.webp -> images/zohran_mamdani.jpg.webp
+	new file:   index.html
+	new file:   space_invaders.py
+	new file:   space_invaders.py.url

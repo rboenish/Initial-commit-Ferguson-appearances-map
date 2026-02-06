@@ -1,0 +1,12 @@
+The file C:/Users/rober/PycharmProjects/Claude_intro/space_invaders.py has been updated. Here's the result of running `cat -n` on a snippet of the edited file:
+    56→
+    57→    # Draw sickle (curved arc)
+    58→    sickle_radius = 120
+    59→    sickle_thickness = 15
+    60→    for angle in range(-60, 120):
+    61→        rad = angle * 3.14159 / 180
+    62→        x = center_x - 40 + int(sickle_radius * math.cos(rad))
+    63→        y = center_y - 20 + int(sickle_radius * math.sin(rad))
+    64→        pygame.draw.circle(surface, FADED_RED, (x, y), sickle_thickness // 2)
+    65→
+    66→    # Draw hammer handle

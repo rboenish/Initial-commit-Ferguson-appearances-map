@@ -1,0 +1,18 @@
+total 20
+drwxr-xr-x 1 rober 197609 0 Jan 20 11:26 .
+drwxr-xr-x 1 rober 197609 0 Jan 21 07:36 ..
+drwxr-xr-x 1 rober 197609 0 Jan 20 11:26 .git
+---
+total 41
+drwxr-xr-x 1 rober 197609    0 Oct  8 12:38 .
+drwxr-xr-x 1 rober 197609    0 Jan 21 07:36 ..
+drwxr-xr-x 1 rober 197609    0 Jan 20 12:19 .idea
+drwxr-xr-x 1 rober 197609    0 Oct  8 12:07 .venv
+drwxr-xr-x 1 rober 197609    0 Oct  8 12:38 cache
+-rw-r--r-- 1 rober 197609 3239 Oct  8 12:34 marathon.py
+-rw-r--r-- 1 rober 197609  417 Oct  8 12:07 PyCharmMiscProject.iml
+-rw-r--r-- 1 rober 197609 1375 Oct  8 12:26 script.py
+-rw-r--r-- 1 rober 197609 1273 Oct  8 12:27 taco_bell_50km_loop.gpx
+---
+Claude_intro
+PythonProject

@@ -1,0 +1,5 @@
+Exit code 1
+Traceback (most recent call last):
+  File "C:\Users\rober\PycharmProjects\Claude_intro\space_invaders.py", line 8, in <module>
+    import pygame
+ModuleNotFoundError: No module named 'pygame'

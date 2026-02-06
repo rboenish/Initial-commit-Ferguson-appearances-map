@@ -1,0 +1,16 @@
+The file C:/Users/rober/PycharmProjects/Claude_intro/space_invaders.py has been updated. Here's the result of running `cat -n` on a snippet of the edited file:
+   351→        print("  - Andrew Cuomo")
+   352→        print("  - Donald Trump")
+   353→        print("  - JD Vance")
+   354→        print()
+   355→        print("Controls:")
+   356→        print("  LEFT/RIGHT arrows - Move")
+   357→        print("  SPACE - Shoot (triple shot!)")
+   358→        print("  R - Restart (when game over)")
+   359→        print("  ESC - Quit")
+   360→        print()
+   361→        print("Images loaded from root directory:")
+   362→        print("=" * 60)
+   363→        print()
+   364→
+   365→        while self.running:

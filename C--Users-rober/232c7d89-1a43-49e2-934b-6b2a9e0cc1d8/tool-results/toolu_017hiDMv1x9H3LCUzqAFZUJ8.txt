@@ -1,0 +1,17 @@
+[main 3c501a0] Add Space Invaders web game and reorganize for GitHub Pages
+ 15 files changed, 1025 insertions(+)
+ create mode 100644 .idea/.gitignore
+ create mode 100644 .idea/Claude_intro.iml
+ create mode 100644 .idea/inspectionProfiles/profiles_settings.xml
+ create mode 100644 .idea/misc.xml
+ create mode 100644 .idea/modules.xml
+ create mode 100644 .idea/vcs.xml
+ create mode 100644 CLAUDE.md
+ create mode 100644 README.md
+ rename andrew_cuomo.jpg => images/andrew_cuomo.jpg (100%)
+ rename donald_trump.jpg => images/donald_trump.jpg (100%)
+ rename jd_vance.jpg => images/jd_vance.jpg (100%)
+ rename zohran_mamdani.jpg.webp => images/zohran_mamdani.jpg.webp (100%)
+ create mode 100644 index.html
+ create mode 100644 space_invaders.py
+ create mode 100644 space_invaders.py.url

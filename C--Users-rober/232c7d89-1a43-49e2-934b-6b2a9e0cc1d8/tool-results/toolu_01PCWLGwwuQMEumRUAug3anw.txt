@@ -1,0 +1,12 @@
+The file C:/Users/rober/PycharmProjects/Claude_intro/space_invaders.py has been updated. Here's the result of running `cat -n` on a snippet of the edited file:
+    96→class Enemy(pygame.sprite.Sprite):
+    97→    """Enemy invader class - Political opponents"""
+    98→    def __init__(self, x, y):
+    99→        super().__init__()
+   100→        # Randomly choose one of the enemy images
+   101→        enemy_image_path = random.choice(ENEMY_IMAGES)
+   102→        self.image, loaded = load_and_scale_image(enemy_image_path, 40, 40, RED)
+   103→
+   104→        if not loaded:
+   105→            # Fallback: Draw a simple invader shape
+   106→            pygame.draw.rect(self.image, YELLOW, (5, 5, 40, 40))

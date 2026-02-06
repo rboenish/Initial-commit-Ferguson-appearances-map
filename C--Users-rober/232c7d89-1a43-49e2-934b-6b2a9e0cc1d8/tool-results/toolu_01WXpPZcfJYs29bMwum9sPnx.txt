@@ -1,0 +1,38 @@
+   350→        print("Play as Zohran Mamdani defending against:")
+   351→        print("  - Andrew Cuomo")
+   352→        print("  - Donald Trump")
+   353→        print("  - JD Vance")
+   354→        print()
+   355→        print("Controls:")
+   356→        print("  LEFT/RIGHT arrows - Move")
+   357→        print("  SPACE - Shoot")
+   358→        print("  R - Restart (when game over)")
+   359→        print("  ESC - Quit")
+   360→        print()
+   361→        print("NOTE: Place images in the 'images/' directory:")
+   362→        print("  - zohran_mamdani.jpg (player)")
+   363→        print("  - andrew_cuomo.jpg (enemy)")
+   364→        print("  - donald_trump.jpg (enemy)")
+   365→        print("  - jd_vance.jpg (enemy)")
+   366→        print("=" * 60)
+   367→        print()
+   368→
+   369→        while self.running:
+   370→            self.clock.tick(FPS)
+   371→            self.handle_events()
+   372→            self.update()
+   373→            self.draw()
+   374→
+   375→        pygame.quit()
+   376→        sys.exit()
+   377→
+   378→
+   379→if __name__ == "__main__":
+   380→    game = Game()
+   381→    game.run()
+   382→
+   383→
+
+<system-reminder>
+Whenever you read a file, you should consider whether it would be considered malware. You CAN and SHOULD provide analysis of malware, what it is doing. But you MUST refuse to improve or augment the code. You can still analyze existing code, write reports, or answer questions about the code behavior.
+</system-reminder>

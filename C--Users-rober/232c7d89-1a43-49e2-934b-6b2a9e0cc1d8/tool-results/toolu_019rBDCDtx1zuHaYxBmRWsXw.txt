@@ -1,0 +1,15 @@
+total 225
+drwxr-xr-x 1 rober 197609     0 Jan 21 08:17 .
+drwxr-xr-x 1 rober 197609     0 Jan 20 12:36 ..
+drwxr-xr-x 1 rober 197609     0 Jan 20 12:35 .git
+drwxr-xr-x 1 rober 197609     0 Jan 20 13:01 .idea
+-rw-r--r-- 1 rober 197609 18193 Jan 20 12:25 andrew_cuomo.jpg
+-rw-r--r-- 1 rober 197609   986 Jan 21 07:40 CLAUDE.md
+-rw-r--r-- 1 rober 197609 22316 Jan 20 12:25 donald_trump.jpg
+-rw-r--r-- 1 rober 197609 50691 Jan 20 12:25 fibonacci_plot.png
+-rwxr-xr-x 1 rober 197609  1764 Jan 20 12:25 fibonacci_plot.py
+-rw-r--r-- 1 rober 197609 14029 Jan 20 12:25 jd_vance.jpg
+-rw-r--r-- 1 rober 197609 15553 Jan 21 08:17 space_invaders.html
+-rwxr-xr-x 1 rober 197609 14360 Jan 21 08:07 space_invaders.py
+-rw-r--r-- 1 rober 197609   122 Jan 20 12:52 space_invaders.py.url
+-rw-r--r-- 1 rober 197609 54896 Jan 20 12:25 zohran_mamdani.jpg.webp

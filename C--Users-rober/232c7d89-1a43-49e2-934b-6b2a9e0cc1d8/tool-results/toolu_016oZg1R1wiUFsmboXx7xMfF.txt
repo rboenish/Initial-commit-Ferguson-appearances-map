@@ -1,0 +1,20 @@
+The file C:/Users/rober/PycharmProjects/Claude_intro/space_invaders.py has been updated. Here's the result of running `cat -n` on a snippet of the edited file:
+   315→        # Check win condition
+   316→        if len(self.enemies) == 0:
+   317→            self.won = True
+   318→
+   319→    def handle_events(self):
+   320→        """Handle game events"""
+   321→        for event in pygame.event.get():
+   322→            if event.type == pygame.QUIT:
+   323→                self.running = False
+   324→            elif event.type == pygame.VIDEORESIZE:
+   325→                self.width = event.w
+   326→                self.height = event.h
+   327→                self.screen = pygame.display.set_mode((self.width, self.height), pygame.RESIZABLE)
+   328→                self.background = create_hammer_sickle_background(self.width, self.height)
+   329→            elif event.type == pygame.KEYDOWN:
+   330→                if event.key == pygame.K_SPACE and not self.game_over and not self.won:
+   331→                    # Shoot with delay
+   332→                    current_time = pygame.time.get_ticks()
+   333→                    if current_time - self.last_shot > self.shoot_delay:

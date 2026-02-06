@@ -1,0 +1,14 @@
+The file C:/Users/rober/PycharmProjects/Claude_intro/space_invaders.py has been updated. Here's the result of running `cat -n` on a snippet of the edited file:
+   186→        # Font
+   187→        self.font = pygame.font.Font(None, 36)
+   188→        self.large_font = pygame.font.Font(None, 72)
+   189→
+   190→    def create_enemies(self):
+   191→        """Create a grid of enemies"""
+   192→        rows = 4
+   193→        cols = 8
+   194→        padding = 55
+   195→        offset_x = 80
+   196→        offset_y = 60
+   197→
+   198→        for row in range(rows):

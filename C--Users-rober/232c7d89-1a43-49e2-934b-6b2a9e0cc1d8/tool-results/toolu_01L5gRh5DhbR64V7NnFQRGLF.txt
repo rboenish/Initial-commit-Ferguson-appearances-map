@@ -1,0 +1,7 @@
+branch 'main' set up to track 'origin/main'.
+remote: 
+remote: Create a pull request for 'main' on GitHub by visiting:        
+remote:      https://github.com/rboenish/Claude_intro/pull/new/main        
+remote: 
+To https://github.com/rboenish/Claude_intro.git
+ * [new branch]      main -> main

@@ -1,0 +1,18 @@
+The file C:/Users/rober/PycharmProjects/Claude_intro/space_invaders.py has been updated. Here's the result of running `cat -n` on a snippet of the edited file:
+   256→        for event in pygame.event.get():
+   257→            if event.type == pygame.QUIT:
+   258→                self.running = False
+   259→            elif event.type == pygame.KEYDOWN:
+   260→                if event.key == pygame.K_SPACE and not self.game_over and not self.won:
+   261→                    # Shoot with delay
+   262→                    current_time = pygame.time.get_ticks()
+   263→                    if current_time - self.last_shot > self.shoot_delay:
+   264→                        bullets = self.player.shoot()
+   265→                        for bullet in bullets:
+   266→                            self.bullets.add(bullet)
+   267→                            self.all_sprites.add(bullet)
+   268→                        self.last_shot = current_time
+   269→                elif event.key == pygame.K_r and (self.game_over or self.won):
+   270→                    # Restart game
+   271→                    self.__init__()
+   272→                elif event.key == pygame.K_ESCAPE:

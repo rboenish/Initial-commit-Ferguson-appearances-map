@@ -1,0 +1,55 @@
+The file C:/Users/rober/PycharmProjects/test-dashboard/README.md has been updated. Here's the result of running `cat -n` on a snippet of the edited file:
+     1→# Washington State Climate Dashboard
+     2→
+     3→An interactive dashboard displaying 100 years of temperature and precipitation data for the five largest cities in Washington State.
+     4→
+     5→## Live Demo
+     6→
+     7→[View the Dashboard](https://rboenish.github.io/test-dashboard/)
+     8→
+     9→## Features
+    10→
+    11→- **100 Years of Data**: Annual climate data from 1924-2024
+    12→- **5 Washington Cities**: Seattle, Spokane, Tacoma, Vancouver, Bellevue
+    13→- **Dual-Axis Chart**: Temperature (°F) on left, Precipitation (inches) on right
+    14→- **Multi-City Comparison**: Select multiple cities to compare side-by-side
+    15→- **Visual Differentiation**:
+    16→  - Solid lines for temperature
+    17→  - Dotted lines for precipitation
+    18→  - Color-coded by city
+    19→- **Year Range Filter**: Focus on specific time periods
+    20→- **Data Export**: Download selected data as CSV
+    21→- **Interactive Tooltips**: Hover for detailed values
+    22→- **Responsive Design**: Works on desktop and mobile
+    23→
+    24→## Technologies
+    25→
+    26→- HTML5 / CSS3
+    27→- JavaScript (Vanilla)
+    28→- Chart.js for visualizations
+    29→
+    30→## Data
+    31→
+    32→The dashboard uses generated climate data based on historical averages for each city:
+    33→
+    34→| City | Avg Temp (°F) | Avg Precip (in) |
+    35→|------|---------------|-----------------|
+    36→| Seattle | 52 | 37 |
+    37→| Spokane | 47 | 17 |
+    38→| Tacoma | 51 | 40 |
+    39→| Vancouver | 53 | 43 |
+    40→| Bellevue | 51 | 38 |
+    41→
+    42→Data includes realistic year-to-year variation and a slight warming trend over the century.
+    43→
+    44→## Usage
+    45→
+    46→1. **Select Cities**: Check/uncheck cities to compare
+    47→2. **Set Year Range**: Enter start and end years
+    48→3. **Click Update**: Refresh the chart with selections
+    49→4. **Export Data**: Download a CSV of the visible data
+    50→
+    51→## Local Development
+    52→
+    53→Simply open `index.html` in a web browser. No build process required.
+    54→

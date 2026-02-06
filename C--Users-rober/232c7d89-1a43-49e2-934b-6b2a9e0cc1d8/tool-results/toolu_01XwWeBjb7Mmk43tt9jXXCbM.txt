@@ -1,0 +1,16 @@
+The file C:/Users/rober/PycharmProjects/Claude_intro/space_invaders.py has been updated. Here's the result of running `cat -n` on a snippet of the edited file:
+    86→            self.rect.x -= self.speed
+    87→        if keys[pygame.K_RIGHT] and self.rect.right < SCREEN_WIDTH:
+    88→            self.rect.x += self.speed
+    89→
+    90→    def shoot(self):
+    91→        """Create three bullets at player position with vertical offset"""
+    92→        return [
+    93→            Bullet(self.rect.centerx, self.rect.top),
+    94→            Bullet(self.rect.centerx, self.rect.top + 10),
+    95→            Bullet(self.rect.centerx, self.rect.top + 20)
+    96→        ]
+    97→
+    98→
+    99→class Enemy(pygame.sprite.Sprite):
+   100→    """Enemy invader class - Political opponents"""

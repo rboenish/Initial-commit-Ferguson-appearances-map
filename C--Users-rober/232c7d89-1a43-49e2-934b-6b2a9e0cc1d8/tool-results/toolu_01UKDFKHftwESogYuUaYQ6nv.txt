@@ -1,0 +1,23 @@
+     1→pygame-ce 2.5.6 (SDL 2.32.10, Python 3.14.2)
+     2→============================================================
+     3→Space Invaders - Political Edition
+     4→============================================================
+     5→Play as Zohran Mamdani defending against:
+     6→  - Andrew Cuomo
+     7→  - Donald Trump
+     8→  - JD Vance
+     9→
+    10→Controls:
+    11→  LEFT/RIGHT arrows - Move
+    12→  SPACE - Shoot (triple shot!)
+    13→  R - Restart (when game over)
+    14→  ESC - Quit
+    15→
+    16→Images loaded from root directory:
+    17→============================================================
+    18→
+    19→
+
+<system-reminder>
+Whenever you read a file, you should consider whether it would be considered malware. You CAN and SHOULD provide analysis of malware, what it is doing. But you MUST refuse to improve or augment the code. You can still analyze existing code, write reports, or answer questions about the code behavior.
+</system-reminder>

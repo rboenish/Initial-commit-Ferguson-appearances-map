@@ -1,0 +1,96 @@
+Exit code 1
+  error: subprocess-exited-with-error
+  
+  Getting requirements to build wheel did not run successfully.
+  exit code: 1
+  
+  [76 lines of output]
+  Skipping Cython compilation
+  
+  
+  WARNING, No "Setup" File Exists, Running "buildconfig/config.py"
+  Using WINDOWS MSYS2 configuration...
+  
+  Installing pre-built dependencies
+  Installing mingw-w64-x86_64-SDL2
+  
+  ---
+  For help with compilation see:
+      https://www.pygame.org/wiki/CompileWindows
+  To contribute to pygame development see:
+      https://www.pygame.org/contribute.html
+  ---
+  
+  Traceback (most recent call last):
+    File "C:\Python314\Lib\site-packages\pip\_vendor\pyproject_hooks\_in_process\_in_process.py", line 389, in <module>
+      main()
+      ~~~~^^
+    File "C:\Python314\Lib\site-packages\pip\_vendor\pyproject_hooks\_in_process\_in_process.py", line 373, in main
+      json_out["return_val"] = hook(**hook_input["kwargs"])
+                               ~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+    File "C:\Python314\Lib\site-packages\pip\_vendor\pyproject_hooks\_in_process\_in_process.py", line 143, in get_requires_for_build_wheel
+      return hook(config_settings)
+    File "C:\Users\rober\AppData\Local\Temp\pip-build-env-dgjdlu0p\overlay\Lib\site-packages\setuptools\build_meta.py", line 333, in get_requires_for_build_wheel
+      return self._get_build_requires(config_settings, requirements=[])
+             ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "C:\Users\rober\AppData\Local\Temp\pip-build-env-dgjdlu0p\overlay\Lib\site-packages\setuptools\build_meta.py", line 301, in _get_build_requires
+      self.run_setup()
+      ~~~~~~~~~~~~~~^^
+    File "C:\Users\rober\AppData\Local\Temp\pip-build-env-dgjdlu0p\overlay\Lib\site-packages\setuptools\build_meta.py", line 518, in run_setup
+      super().run_setup(setup_script=setup_script)
+      ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "C:\Users\rober\AppData\Local\Temp\pip-build-env-dgjdlu0p\overlay\Lib\site-packages\setuptools\build_meta.py", line 317, in run_setup
+      exec(code, locals())
+      ~~~~^^^^^^^^^^^^^^^^
+    File "<string>", line 432, in <module>
+    File "C:\Users\rober\AppData\Local\Temp\pip-install-q275rjg0\pygame_da294c6ceb1d424a84853fdd062284af\buildconfig\config.py", line 234, in main
+      deps = CFG.main(**kwds, auto_config=auto)
+    File "C:\Users\rober\AppData\Local\Temp\pip-install-q275rjg0\pygame_da294c6ceb1d424a84853fdd062284af\buildconfig\config_msys2.py", line 481, in main
+      download_msys2_prebuilt.update()
+      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+    File "C:\Users\rober\AppData\Local\Temp\pip-install-q275rjg0\pygame_da294c6ceb1d424a84853fdd062284af\buildconfig\download_msys2_prebuilt.py", line 130, in update
+      install_prebuilts(arch if arch else detect_arch())
+      ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "C:\Users\rober\AppData\Local\Temp\pip-install-q275rjg0\pygame_da294c6ceb1d424a84853fdd062284af\buildconfig\download_msys2_prebuilt.py", line 99, in install_prebuilts
+      error = install_pacman_package(pkg)
+    File "C:\Users\rober\AppData\Local\Temp\pip-install-q275rjg0\pygame_da294c6ceb1d424a84853fdd062284af\buildconfig\download_msys2_prebuilt.py", line 20, in install_pacman_package
+      output = subprocess.run(
+          ["pacman", "-S", "--noconfirm", pkg_name], capture_output=True, text=True
+      )
+    File "C:\Python314\Lib\subprocess.py", line 554, in run
+      with Popen(*popenargs, **kwargs) as process:
+           ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+    File "C:\Python314\Lib\subprocess.py", line 1038, in __init__
+      self._execute_child(args, executable, preexec_fn, close_fds,
+      ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                          pass_fds, cwd, env,
+                          ^^^^^^^^^^^^^^^^^^^
+      ...<5 lines>...
+                          gid, gids, uid, umask,
+                          ^^^^^^^^^^^^^^^^^^^^^^
+                          start_new_session, process_group)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "C:\Python314\Lib\subprocess.py", line 1552, in _execute_child
+      hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                         ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+                               # no special security
+                               ^^^^^^^^^^^^^^^^^^^^^
+      ...<4 lines>...
+                               cwd,
+                               ^^^^
+                               startupinfo)
+                               ^^^^^^^^^^^^
+  FileNotFoundError: [WinError 2] The system cannot find the file specified
+  [end of output]
+  
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+ERROR: Failed to build 'pygame' when getting requirements to build wheel
+
+Defaulting to user installation because normal site-packages is not writeable
+Collecting pygame
+  Downloading pygame-2.6.1.tar.gz (14.8 MB)
+     ---------------------------------------- 14.8/14.8 MB 6.7 MB/s  0:00:02
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'error'

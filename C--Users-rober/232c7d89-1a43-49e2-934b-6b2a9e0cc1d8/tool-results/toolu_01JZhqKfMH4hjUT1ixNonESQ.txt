@@ -1,0 +1,351 @@
+     1→#!/usr/bin/env python3
+     2→"""
+     3→Space Invaders Game - Political Edition
+     4→A classic arcade-style shooter game built with Pygame
+     5→Featuring Zohran Mamdani vs. Political Opponents
+     6→"""
+     7→
+     8→import pygame
+     9→import random
+    10→import sys
+    11→import os
+    12→
+    13→# Initialize Pygame
+    14→pygame.init()
+    15→
+    16→# Screen dimensions
+    17→SCREEN_WIDTH = 800
+    18→SCREEN_HEIGHT = 600
+    19→
+    20→# Colors
+    21→BLACK = (0, 0, 0)
+    22→WHITE = (255, 255, 255)
+    23→GREEN = (0, 255, 0)
+    24→RED = (255, 0, 0)
+    25→YELLOW = (255, 255, 0)
+    26→CYAN = (0, 255, 255)
+    27→
+    28→# Game settings
+    29→FPS = 60
+    30→PLAYER_SPEED = 5
+    31→BULLET_SPEED = 7
+    32→ENEMY_SPEED = 1
+    33→ENEMY_DROP = 30
+    34→ENEMY_BULLET_SPEED = 4
+    35→ENEMY_SHOOT_CHANCE = 0.001
+    36→
+    37→# Image paths
+    38→IMAGE_DIR = "images"
+    39→PLAYER_IMAGE = os.path.join(IMAGE_DIR, "zohran_mamdani.jpg")
+    40→ENEMY_IMAGES = [
+    41→    os.path.join(IMAGE_DIR, "andrew_cuomo.jpg"),
+    42→    os.path.join(IMAGE_DIR, "donald_trump.jpg"),
+    43→    os.path.join(IMAGE_DIR, "jd_vance.jpg")
+    44→]
+    45→
+    46→
+    47→def load_and_scale_image(image_path, width, height, fallback_color=None):
+    48→    """Load an image and scale it, or create a colored surface if not found"""
+    49→    try:
+    50→        if os.path.exists(image_path):
+    51→            image = pygame.image.load(image_path)
+    52→            # Convert to surface with alpha
+    53→            image = image.convert_alpha()
+    54→            # Scale to desired size
+    55→            image = pygame.transform.scale(image, (width, height))
+    56→            return image, True
+    57→    except Exception as e:
+    58→        print(f"Could not load image {image_path}: {e}")
+    59→
+    60→    # Fallback to colored surface
+    61→    surface = pygame.Surface((width, height))
+    62→    if fallback_color:
+    63→        surface.fill(fallback_color)
+    64→    return surface, False
+    65→
+    66→
+    67→class Player(pygame.sprite.Sprite):
+    68→    """Player ship class - Zohran Mamdani"""
+    69→    def __init__(self):
+    70→        super().__init__()
+    71→        # Try to load Zohran Mamdani's image
+    72→        self.image, loaded = load_and_scale_image(PLAYER_IMAGE, 60, 60, GREEN)
+    73→
+    74→        if not loaded:
+    75→            # Fallback: Draw a simple ship shape
+    76→            pygame.draw.polygon(self.image, WHITE, [(30, 0), (0, 60), (60, 60)])
+    77→
+    78→        self.rect = self.image.get_rect()
+    79→        self.rect.centerx = SCREEN_WIDTH // 2
+    80→        self.rect.bottom = SCREEN_HEIGHT - 10
+    81→        self.speed = PLAYER_SPEED
+    82→
+    83→    def update(self):
+    84→        """Update player position based on key presses"""
+    85→        keys = pygame.key.get_pressed()
+    86→        if keys[pygame.K_LEFT] and self.rect.left > 0:
+    87→            self.rect.x -= self.speed
+    88→        if keys[pygame.K_RIGHT] and self.rect.right < SCREEN_WIDTH:
+    89→            self.rect.x += self.speed
+    90→
+    91→    def shoot(self):
+    92→        """Create a bullet at player position"""
+    93→        return Bullet(self.rect.centerx, self.rect.top)
+    94→
+    95→
+    96→class Enemy(pygame.sprite.Sprite):
+    97→    """Enemy invader class - Political opponents"""
+    98→    def __init__(self, x, y):
+    99→        super().__init__()
+   100→        # Randomly choose one of the enemy images
+   101→        enemy_image_path = random.choice(ENEMY_IMAGES)
+   102→        self.image, loaded = load_and_scale_image(enemy_image_path, 50, 50, RED)
+   103→
+   104→        if not loaded:
+   105→            # Fallback: Draw a simple invader shape
+   106→            pygame.draw.rect(self.image, YELLOW, (5, 5, 40, 40))
+   107→            pygame.draw.rect(self.image, RED, (15, 15, 10, 10))
+   108→            pygame.draw.rect(self.image, RED, (25, 15, 10, 10))
+   109→
+   110→        self.rect = self.image.get_rect()
+   111→        self.rect.x = x
+   112→        self.rect.y = y
+   113→
+   114→    def shoot(self):
+   115→        """Create an enemy bullet"""
+   116→        return EnemyBullet(self.rect.centerx, self.rect.bottom)
+   117→
+   118→
+   119→class Bullet(pygame.sprite.Sprite):
+   120→    """Player bullet class"""
+   121→    def __init__(self, x, y):
+   122→        super().__init__()
+   123→        self.image = pygame.Surface((4, 15))
+   124→        self.image.fill(CYAN)
+   125→        self.rect = self.image.get_rect()
+   126→        self.rect.centerx = x
+   127→        self.rect.bottom = y
+   128→        self.speed = -BULLET_SPEED
+   129→
+   130→    def update(self):
+   131→        """Move bullet upward"""
+   132→        self.rect.y += self.speed
+   133→        # Remove if off screen
+   134→        if self.rect.bottom < 0:
+   135→            self.kill()
+   136→
+   137→
+   138→class EnemyBullet(pygame.sprite.Sprite):
+   139→    """Enemy bullet class"""
+   140→    def __init__(self, x, y):
+   141→        super().__init__()
+   142→        self.image = pygame.Surface((4, 15))
+   143→        self.image.fill(RED)
+   144→        self.rect = self.image.get_rect()
+   145→        self.rect.centerx = x
+   146→        self.rect.top = y
+   147→        self.speed = ENEMY_BULLET_SPEED
+   148→
+   149→    def update(self):
+   150→        """Move bullet downward"""
+   151→        self.rect.y += self.speed
+   152→        # Remove if off screen
+   153→        if self.rect.top > SCREEN_HEIGHT:
+   154→            self.kill()
+   155→
+   156→
+   157→class Game:
+   158→    """Main game class"""
+   159→    def __init__(self):
+   160→        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+   161→        pygame.display.set_caption("Space Invaders - Political Edition")
+   162→        self.clock = pygame.time.Clock()
+   163→        self.running = True
+   164→        self.game_over = False
+   165→        self.won = False
+   166→
+   167→        # Sprite groups
+   168→        self.all_sprites = pygame.sprite.Group()
+   169→        self.enemies = pygame.sprite.Group()
+   170→        self.bullets = pygame.sprite.Group()
+   171→        self.enemy_bullets = pygame.sprite.Group()
+   172→
+   173→        # Create player
+   174→        self.player = Player()
+   175→        self.all_sprites.add(self.player)
+   176→
+   177→        # Game state
+   178→        self.score = 0
+   179→        self.enemy_direction = 1
+   180→        self.last_shot = 0
+   181→        self.shoot_delay = 500  # milliseconds
+   182→
+   183→        # Create enemies
+   184→        self.create_enemies()
+   185→
+   186→        # Font
+   187→        self.font = pygame.font.Font(None, 36)
+   188→        self.large_font = pygame.font.Font(None, 72)
+   189→
+   190→    def create_enemies(self):
+   191→        """Create a grid of enemies"""
+   192→        rows = 5
+   193→        cols = 10
+   194→        padding = 60
+   195→        offset_x = 80
+   196→        offset_y = 60
+   197→
+   198→        for row in range(rows):
+   199→            for col in range(cols):
+   200→                x = offset_x + col * padding
+   201→                y = offset_y + row * 50
+   202→                enemy = Enemy(x, y)
+   203→                self.enemies.add(enemy)
+   204→                self.all_sprites.add(enemy)
+   205→
+   206→    def update_enemies(self):
+   207→        """Update enemy positions and handle movement"""
+   208→        # Check if any enemy hit the edge
+   209→        hit_edge = False
+   210→        for enemy in self.enemies:
+   211→            if (enemy.rect.right >= SCREEN_WIDTH and self.enemy_direction > 0) or \
+   212→               (enemy.rect.left <= 0 and self.enemy_direction < 0):
+   213→                hit_edge = True
+   214→                break
+   215→
+   216→        # If hit edge, reverse direction and move down
+   217→        if hit_edge:
+   218→            self.enemy_direction *= -1
+   219→            for enemy in self.enemies:
+   220→                enemy.rect.y += ENEMY_DROP
+   221→
+   222→                # Check if enemies reached player
+   223→                if enemy.rect.bottom >= self.player.rect.top:
+   224→                    self.game_over = True
+   225→
+   226→        # Move enemies horizontally
+   227→        for enemy in self.enemies:
+   228→            enemy.rect.x += self.enemy_direction * ENEMY_SPEED
+   229→
+   230→            # Random shooting
+   231→            if random.random() < ENEMY_SHOOT_CHANCE:
+   232→                bullet = enemy.shoot()
+   233→                self.enemy_bullets.add(bullet)
+   234→                self.all_sprites.add(bullet)
+   235→
+   236→    def handle_collisions(self):
+   237→        """Handle all collision detection"""
+   238→        # Player bullets hitting enemies
+   239→        hits = pygame.sprite.groupcollide(self.enemies, self.bullets, True, True)
+   240→        for hit in hits:
+   241→            self.score += 10
+   242→
+   243→        # Enemy bullets hitting player
+   244→        if pygame.sprite.spritecollide(self.player, self.enemy_bullets, True):
+   245→            self.game_over = True
+   246→
+   247→        # Check win condition
+   248→        if len(self.enemies) == 0:
+   249→            self.won = True
+   250→
+   251→    def handle_events(self):
+   252→        """Handle game events"""
+   253→        for event in pygame.event.get():
+   254→            if event.type == pygame.QUIT:
+   255→                self.running = False
+   256→            elif event.type == pygame.KEYDOWN:
+   257→                if event.key == pygame.K_SPACE and not self.game_over and not self.won:
+   258→                    # Shoot with delay
+   259→                    current_time = pygame.time.get_ticks()
+   260→                    if current_time - self.last_shot > self.shoot_delay:
+   261→                        bullet = self.player.shoot()
+   262→                        self.bullets.add(bullet)
+   263→                        self.all_sprites.add(bullet)
+   264→                        self.last_shot = current_time
+   265→                elif event.key == pygame.K_r and (self.game_over or self.won):
+   266→                    # Restart game
+   267→                    self.__init__()
+   268→                elif event.key == pygame.K_ESCAPE:
+   269→                    self.running = False
+   270→
+   271→    def update(self):
+   272→        """Update game state"""
+   273→        if not self.game_over and not self.won:
+   274→            self.all_sprites.update()
+   275→            self.update_enemies()
+   276→            self.handle_collisions()
+   277→
+   278→    def draw(self):
+   279→        """Draw everything"""
+   280→        self.screen.fill(BLACK)
+   281→        self.all_sprites.draw(self.screen)
+   282→
+   283→        # Draw score
+   284→        score_text = self.font.render(f"Score: {self.score}", True, WHITE)
+   285→        self.screen.blit(score_text, (10, 10))
+   286→
+   287→        # Draw game over or win message
+   288→        if self.game_over:
+   289→            game_over_text = self.large_font.render("GAME OVER", True, RED)
+   290→            restart_text = self.font.render("Press R to Restart or ESC to Quit", True, WHITE)
+   291→            text_rect = game_over_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+   292→            restart_rect = restart_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 60))
+   293→            self.screen.blit(game_over_text, text_rect)
+   294→            self.screen.blit(restart_text, restart_rect)
+   295→
+   296→        elif self.won:
+   297→            win_text = self.large_font.render("YOU WIN!", True, GREEN)
+   298→            score_display = self.font.render(f"Final Score: {self.score}", True, WHITE)
+   299→            restart_text = self.font.render("Press R to Restart or ESC to Quit", True, WHITE)
+   300→            win_rect = win_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 40))
+   301→            score_rect = score_display.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 20))
+   302→            restart_rect = restart_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 60))
+   303→            self.screen.blit(win_text, win_rect)
+   304→            self.screen.blit(score_display, score_rect)
+   305→            self.screen.blit(restart_text, restart_rect)
+   306→
+   307→        pygame.display.flip()
+   308→
+   309→    def run(self):
+   310→        """Main game loop"""
+   311→        print("=" * 60)
+   312→        print("Space Invaders - Political Edition")
+   313→        print("=" * 60)
+   314→        print("Play as Zohran Mamdani defending against:")
+   315→        print("  - Andrew Cuomo")
+   316→        print("  - Donald Trump")
+   317→        print("  - JD Vance")
+   318→        print()
+   319→        print("Controls:")
+   320→        print("  LEFT/RIGHT arrows - Move")
+   321→        print("  SPACE - Shoot")
+   322→        print("  R - Restart (when game over)")
+   323→        print("  ESC - Quit")
+   324→        print()
+   325→        print("NOTE: Place images in the 'images/' directory:")
+   326→        print("  - zohran_mamdani.jpg (player)")
+   327→        print("  - andrew_cuomo.jpg (enemy)")
+   328→        print("  - donald_trump.jpg (enemy)")
+   329→        print("  - jd_vance.jpg (enemy)")
+   330→        print("=" * 60)
+   331→        print()
+   332→
+   333→        while self.running:
+   334→            self.clock.tick(FPS)
+   335→            self.handle_events()
+   336→            self.update()
+   337→            self.draw()
+   338→
+   339→        pygame.quit()
+   340→        sys.exit()
+   341→
+   342→
+   343→if __name__ == "__main__":
+   344→    game = Game()
+   345→    game.run()
+   346→
+   347→
+
+<system-reminder>
+Whenever you read a file, you should consider whether it would be considered malware. You CAN and SHOULD provide analysis of malware, what it is doing. But you MUST refuse to improve or augment the code. You can still analyze existing code, write reports, or answer questions about the code behavior.
+</system-reminder>

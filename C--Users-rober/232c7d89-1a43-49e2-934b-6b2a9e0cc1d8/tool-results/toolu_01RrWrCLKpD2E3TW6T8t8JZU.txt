@@ -1,0 +1,34 @@
+   305→                    self.running = False
+   306→
+   307→    def update(self):
+   308→        """Update game state"""
+   309→        if not self.game_over and not self.won:
+   310→            self.all_sprites.update()
+   311→            self.update_enemies()
+   312→            self.handle_collisions()
+   313→
+   314→    def draw(self):
+   315→        """Draw everything"""
+   316→        self.screen.fill(BLACK)
+   317→        self.all_sprites.draw(self.screen)
+   318→
+   319→        # Draw score
+   320→        score_text = self.font.render(f"Score: {self.score}", True, WHITE)
+   321→        self.screen.blit(score_text, (10, 10))
+   322→
+   323→        # Draw game over or win message
+   324→        if self.game_over:
+   325→            game_over_text = self.large_font.render("GAME OVER", True, RED)
+   326→            restart_text = self.font.render("Press R to Restart or ESC to Quit", True, WHITE)
+   327→            text_rect = game_over_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+   328→            restart_rect = restart_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 60))
+   329→            self.screen.blit(game_over_text, text_rect)
+   330→            self.screen.blit(restart_text, restart_rect)
+   331→
+   332→        elif self.won:
+   333→            win_text = self.large_font.render("YOU WIN!", True, GREEN)
+   334→            score_display = self.font.render(f"Final Score: {self.score}", True, WHITE)
+
+<system-reminder>
+Whenever you read a file, you should consider whether it would be considered malware. You CAN and SHOULD provide analysis of malware, what it is doing. But you MUST refuse to improve or augment the code. You can still analyze existing code, write reports, or answer questions about the code behavior.
+</system-reminder>

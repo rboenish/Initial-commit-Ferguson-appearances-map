@@ -1,0 +1,70 @@
+     1→#!/usr/bin/env python3
+     2→"""
+     3→Generate a Fibonacci-like sequence starting with 2 and plot it.
+     4→Each new number is the sum of the current and previous number.
+     5→"""
+     6→
+     7→import matplotlib.pyplot as plt
+     8→import numpy as np
+     9→
+    10→def generate_sequence(iterations=1_000):
+    11→    """
+    12→    Generate a Fibonacci-like sequence starting with 2.
+    13→    Each new number = current number + previous number.
+    14→
+    15→    Args:
+    16→        iterations: Number of iterations to run
+    17→
+    18→    Returns:
+    19→        List of sequence values
+    20→    """
+    21→    # Start with 2, 2
+    22→    prev = 2
+    23→    current = 2
+    24→    sequence = [prev, current]
+    25→
+    26→    # Generate the sequence
+    27→    for _ in range(iterations - 2):
+    28→        next_val = current + prev
+    29→        sequence.append(next_val)
+    30→        prev = current
+    31→        current = next_val
+    32→
+    33→    return sequence
+    34→
+    35→def main():
+    36→    print("Generating Fibonacci-like sequence starting with 2...")
+    37→    print("Running 1000 iterations...")
+    38→
+    39→    sequence = generate_sequence(1_000)
+    40→
+    41→    print(f"Sequence generated with {len(sequence)} values")
+    42→    print(f"First 10 values: {sequence[:10]}")
+    43→    print(f"Last value: {sequence[-1]}")
+    44→
+    45→    # Plot the sequence
+    46→    print("Creating plot...")
+    47→    plt.figure(figsize=(12, 6))
+    48→    plt.plot(sequence, color='blue', linewidth=0.5)
+    49→    plt.title('Fibonacci-like Sequence (Starting with 2)', fontsize=14)
+    50→    plt.xlabel('Iteration', fontsize=12)
+    51→    plt.ylabel('Value', fontsize=12)
+    52→    plt.grid(True, alpha=0.3)
+    53→
+    54→    # Use log scale for y-axis since values grow exponentially
+    55→    plt.yscale('log')
+    56→
+    57→    # Save the plot
+    58→    plt.savefig('fibonacci_plot.png', dpi=150, bbox_inches='tight')
+    59→    print("Plot saved as 'fibonacci_plot.png'")
+    60→
+    61→    # Show the plot
+    62→    plt.show()
+    63→
+    64→if __name__ == "__main__":
+    65→    main()
+    66→
+
+<system-reminder>
+Whenever you read a file, you should consider whether it would be considered malware. You CAN and SHOULD provide analysis of malware, what it is doing. But you MUST refuse to improve or augment the code. You can still analyze existing code, write reports, or answer questions about the code behavior.
+</system-reminder>

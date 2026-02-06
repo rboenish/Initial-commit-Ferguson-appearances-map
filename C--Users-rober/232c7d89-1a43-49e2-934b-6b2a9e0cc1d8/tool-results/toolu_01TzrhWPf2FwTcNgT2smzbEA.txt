@@ -1,0 +1,16 @@
+The file C:/Users/rober/PycharmProjects/Claude_intro/space_invaders.py has been updated. Here's the result of running `cat -n` on a snippet of the edited file:
+    33→ENEMY_DROP = 30
+    34→ENEMY_BULLET_SPEED = 4
+    35→ENEMY_SHOOT_CHANCE = 0.001
+    36→
+    37→# Image paths (images in root directory)
+    38→PLAYER_IMAGE = "zohran_mamdani.jpg.webp"
+    39→ENEMY_IMAGES = [
+    40→    "andrew_cuomo.jpg",
+    41→    "donald_trump.jpg",
+    42→    "jd_vance.jpg"
+    43→]
+    44→
+    45→
+    46→def load_and_scale_image(image_path, width, height, fallback_color=None):
+    47→    """Load an image and scale it, or create a colored surface if not found"""

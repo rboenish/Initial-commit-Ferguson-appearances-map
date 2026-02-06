@@ -1,0 +1,640 @@
+     1→<!DOCTYPE html>
+     2→<html lang="en">
+     3→<head>
+     4→    <meta charset="UTF-8">
+     5→    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     6→    <title>Washington State Climate Dashboard</title>
+     7→    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+     8→    <style>
+     9→        * {
+    10→            margin: 0;
+    11→            padding: 0;
+    12→            box-sizing: border-box;
+    13→        }
+    14→
+    15→        body {
+    16→            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    17→            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    18→            min-height: 100vh;
+    19→            color: #fff;
+    20→            padding: 20px;
+    21→        }
+    22→
+    23→        .container {
+    24→            max-width: 1400px;
+    25→            margin: 0 auto;
+    26→        }
+    27→
+    28→        header {
+    29→            text-align: center;
+    30→            margin-bottom: 30px;
+    31→        }
+    32→
+    33→        h1 {
+    34→            font-size: 2.5rem;
+    35→            margin-bottom: 10px;
+    36→            background: linear-gradient(90deg, #4facfe, #00f2fe);
+    37→            -webkit-background-clip: text;
+    38→            -webkit-text-fill-color: transparent;
+    39→            background-clip: text;
+    40→        }
+    41→
+    42→        .subtitle {
+    43→            color: #888;
+    44→            font-size: 1.1rem;
+    45→        }
+    46→
+    47→        .controls {
+    48→            display: flex;
+    49→            flex-wrap: wrap;
+    50→            gap: 20px;
+    51→            margin-bottom: 30px;
+    52→            background: rgba(255,255,255,0.05);
+    53→            padding: 20px;
+    54→            border-radius: 12px;
+    55→        }
+    56→
+    57→        .control-group {
+    58→            flex: 1;
+    59→            min-width: 200px;
+    60→        }
+    61→
+    62→        .control-group label {
+    63→            display: block;
+    64→            margin-bottom: 8px;
+    65→            font-weight: 600;
+    66→            color: #4facfe;
+    67→        }
+    68→
+    69→        .city-checkboxes {
+    70→            display: flex;
+    71→            flex-wrap: wrap;
+    72→            gap: 10px;
+    73→        }
+    74→
+    75→        .city-checkbox {
+    76→            display: flex;
+    77→            align-items: center;
+    78→            gap: 6px;
+    79→            padding: 8px 12px;
+    80→            background: rgba(255,255,255,0.1);
+    81→            border-radius: 20px;
+    82→            cursor: pointer;
+    83→            transition: all 0.3s;
+    84→        }
+    85→
+    86→        .city-checkbox:hover {
+    87→            background: rgba(255,255,255,0.2);
+    88→        }
+    89→
+    90→        .city-checkbox input {
+    91→            cursor: pointer;
+    92→        }
+    93→
+    94→        .city-checkbox .color-dot {
+    95→            width: 12px;
+    96→            height: 12px;
+    97→            border-radius: 50%;
+    98→        }
+    99→
+   100→        .range-inputs {
+   101→            display: flex;
+   102→            gap: 10px;
+   103→            align-items: center;
+   104→        }
+   105→
+   106→        .range-inputs input {
+   107→            width: 80px;
+   108→            padding: 8px;
+   109→            border: none;
+   110→            border-radius: 6px;
+   111→            background: rgba(255,255,255,0.1);
+   112→            color: #fff;
+   113→            text-align: center;
+   114→        }
+   115→
+   116→        .range-inputs span {
+   117→            color: #888;
+   118→        }
+   119→
+   120→        button {
+   121→            padding: 10px 20px;
+   122→            border: none;
+   123→            border-radius: 6px;
+   124→            cursor: pointer;
+   125→            font-weight: 600;
+   126→            transition: all 0.3s;
+   127→        }
+   128→
+   129→        .btn-primary {
+   130→            background: linear-gradient(90deg, #4facfe, #00f2fe);
+   131→            color: #1a1a2e;
+   132→        }
+   133→
+   134→        .btn-primary:hover {
+   135→            transform: translateY(-2px);
+   136→            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+   137→        }
+   138→
+   139→        .btn-export {
+   140→            background: rgba(255,255,255,0.1);
+   141→            color: #fff;
+   142→            border: 1px solid rgba(255,255,255,0.2);
+   143→        }
+   144→
+   145→        .btn-export:hover {
+   146→            background: rgba(255,255,255,0.2);
+   147→        }
+   148→
+   149→        .chart-container {
+   150→            background: rgba(255,255,255,0.05);
+   151→            border-radius: 12px;
+   152→            padding: 20px;
+   153→            margin-bottom: 30px;
+   154→        }
+   155→
+   156→        .legend-container {
+   157→            display: flex;
+   158→            flex-wrap: wrap;
+   159→            justify-content: center;
+   160→            gap: 20px;
+   161→            margin-top: 20px;
+   162→            padding: 15px;
+   163→            background: rgba(0,0,0,0.2);
+   164→            border-radius: 8px;
+   165→        }
+   166→
+   167→        .legend-item {
+   168→            display: flex;
+   169→            align-items: center;
+   170→            gap: 8px;
+   171→            font-size: 0.9rem;
+   172→        }
+   173→
+   174→        .legend-line {
+   175→            width: 30px;
+   176→            height: 3px;
+   177→        }
+   178→
+   179→        .legend-line.solid {
+   180→            border-radius: 2px;
+   181→        }
+   182→
+   183→        .legend-line.dotted {
+   184→            border-style: dotted;
+   185→            border-width: 2px;
+   186→            height: 0;
+   187→        }
+   188→
+   189→        .data-table-container {
+   190→            background: rgba(255,255,255,0.05);
+   191→            border-radius: 12px;
+   192→            padding: 20px;
+   193→            overflow-x: auto;
+   194→        }
+   195→
+   196→        .data-table-container h3 {
+   197→            margin-bottom: 15px;
+   198→            color: #4facfe;
+   199→        }
+   200→
+   201→        table {
+   202→            width: 100%;
+   203→            border-collapse: collapse;
+   204→        }
+   205→
+   206→        th, td {
+   207→            padding: 12px;
+   208→            text-align: left;
+   209→            border-bottom: 1px solid rgba(255,255,255,0.1);
+   210→        }
+   211→
+   212→        th {
+   213→            background: rgba(79, 172, 254, 0.2);
+   214→            font-weight: 600;
+   215→        }
+   216→
+   217→        tr:hover {
+   218→            background: rgba(255,255,255,0.05);
+   219→        }
+   220→
+   221→        .no-data {
+   222→            text-align: center;
+   223→            color: #888;
+   224→            padding: 40px;
+   225→        }
+   226→
+   227→        .axis-labels {
+   228→            display: flex;
+   229→            justify-content: space-between;
+   230→            margin-bottom: 10px;
+   231→            font-size: 0.9rem;
+   232→        }
+   233→
+   234→        .temp-label {
+   235→            color: #ff6b6b;
+   236→        }
+   237→
+   238→        .precip-label {
+   239→            color: #4facfe;
+   240→        }
+   241→
+   242→        @media (max-width: 768px) {
+   243→            h1 {
+   244→                font-size: 1.8rem;
+   245→            }
+   246→            .controls {
+   247→                flex-direction: column;
+   248→            }
+   249→        }
+   250→    </style>
+   251→</head>
+   252→<body>
+   253→    <div class="container">
+   254→        <header>
+   255→            <h1>Washington State Climate Dashboard</h1>
+   256→            <p class="subtitle">Annual Temperature & Precipitation Data (1924-2024)</p>
+   257→        </header>
+   258→
+   259→        <div class="controls">
+   260→            <div class="control-group">
+   261→                <label>Select Cities</label>
+   262→                <div class="city-checkboxes" id="cityCheckboxes">
+   263→                    <!-- Generated by JavaScript -->
+   264→                </div>
+   265→            </div>
+   266→
+   267→            <div class="control-group">
+   268→                <label>Year Range</label>
+   269→                <div class="range-inputs">
+   270→                    <input type="number" id="startYear" min="1924" max="2024" value="1924">
+   271→                    <span>to</span>
+   272→                    <input type="number" id="endYear" min="1924" max="2024" value="2024">
+   273→                    <button class="btn-primary" onclick="updateChart()">Update</button>
+   274→                </div>
+   275→            </div>
+   276→
+   277→            <div class="control-group" style="display: flex; align-items: flex-end;">
+   278→                <button class="btn-export" onclick="exportData()">Export Data (CSV)</button>
+   279→            </div>
+   280→        </div>
+   281→
+   282→        <div class="chart-container">
+   283→            <div class="axis-labels">
+   284→                <span class="temp-label">Temperature (°F)</span>
+   285→                <span class="precip-label">Precipitation (inches)</span>
+   286→            </div>
+   287→            <canvas id="climateChart"></canvas>
+   288→            <div class="legend-container" id="legendContainer">
+   289→                <!-- Generated by JavaScript -->
+   290→            </div>
+   291→        </div>
+   292→
+   293→        <div class="data-table-container">
+   294→            <h3>Data Table</h3>
+   295→            <div id="dataTableWrapper">
+   296→                <p class="no-data">Select cities and click "Update" to view data</p>
+   297→            </div>
+   298→        </div>
+   299→    </div>
+   300→
+   301→    <script>
+   302→        // City configurations with colors
+   303→        const cities = {
+   304→            'Seattle': { color: '#4facfe', baseTemp: 52, basePrecip: 37 },
+   305→            'Spokane': { color: '#f093fb', baseTemp: 47, basePrecip: 17 },
+   306→            'Tacoma': { color: '#4ade80', baseTemp: 51, basePrecip: 40 },
+   307→            'Vancouver': { color: '#fbbf24', baseTemp: 53, basePrecip: 43 },
+   308→            'Bellevue': { color: '#f87171', baseTemp: 51, basePrecip: 38 }
+   309→        };
+   310→
+   311→        // Generate realistic climate data
+   312→        function generateClimateData() {
+   313→            const data = {};
+   314→            const startYear = 1924;
+   315→            const endYear = 2024;
+   316→
+   317→            for (const [city, config] of Object.entries(cities)) {
+   318→                data[city] = [];
+   319→
+   320→                for (let year = startYear; year <= endYear; year++) {
+   321→                    // Add realistic variation and slight warming trend
+   322→                    const yearOffset = (year - 1924) / 100;
+   323→                    const tempVariation = (Math.sin(year * 0.3) * 2) + (Math.random() - 0.5) * 3;
+   324→                    const precipVariation = (Math.cos(year * 0.25) * 4) + (Math.random() - 0.5) * 8;
+   325→
+   326→                    // Slight warming trend over 100 years
+   327→                    const warmingTrend = yearOffset * 2.5;
+   328→
+   329→                    data[city].push({
+   330→                        year: year,
+   331→                        temperature: Math.round((config.baseTemp + tempVariation + warmingTrend) * 10) / 10,
+   332→                        precipitation: Math.round((config.basePrecip + precipVariation) * 10) / 10
+   333→                    });
+   334→                }
+   335→            }
+   336→            return data;
+   337→        }
+   338→
+   339→        const climateData = generateClimateData();
+   340→        let chart = null;
+   341→        let selectedCities = ['Seattle'];
+   342→
+   343→        // Initialize city checkboxes
+   344→        function initCityCheckboxes() {
+   345→            const container = document.getElementById('cityCheckboxes');
+   346→            container.innerHTML = '';
+   347→
+   348→            for (const [city, config] of Object.entries(cities)) {
+   349→                const checked = city === 'Seattle' ? 'checked' : '';
+   350→                container.innerHTML += `
+   351→                    <label class="city-checkbox">
+   352→                        <input type="checkbox" value="${city}" ${checked} onchange="toggleCity('${city}')">
+   353→                        <span class="color-dot" style="background: ${config.color}"></span>
+   354→                        ${city}
+   355→                    </label>
+   356→                `;
+   357→            }
+   358→        }
+   359→
+   360→        // Toggle city selection
+   361→        function toggleCity(city) {
+   362→            const index = selectedCities.indexOf(city);
+   363→            if (index > -1) {
+   364→                selectedCities.splice(index, 1);
+   365→            } else {
+   366→                selectedCities.push(city);
+   367→            }
+   368→        }
+   369→
+   370→        // Create raindrop pattern for precipitation lines
+   371→        function createRaindropPattern(color) {
+   372→            const canvas = document.createElement('canvas');
+   373→            canvas.width = 20;
+   374→            canvas.height = 20;
+   375→            const ctx = canvas.getContext('2d');
+   376→
+   377→            // Draw raindrop
+   378→            ctx.fillStyle = color;
+   379→            ctx.beginPath();
+   380→            ctx.moveTo(10, 2);
+   381→            ctx.bezierCurveTo(10, 2, 4, 10, 4, 13);
+   382→            ctx.bezierCurveTo(4, 17, 7, 18, 10, 18);
+   383→            ctx.bezierCurveTo(13, 18, 16, 17, 16, 13);
+   384→            ctx.bezierCurveTo(16, 10, 10, 2, 10, 2);
+   385→            ctx.fill();
+   386→
+   387→            return ctx.createPattern(canvas, 'repeat');
+   388→        }
+   389→
+   390→        // Update chart
+   391→        function updateChart() {
+   392→            const startYear = parseInt(document.getElementById('startYear').value);
+   393→            const endYear = parseInt(document.getElementById('endYear').value);
+   394→
+   395→            if (selectedCities.length === 0) {
+   396→                alert('Please select at least one city');
+   397→                return;
+   398→            }
+   399→
+   400→            if (startYear >= endYear) {
+   401→                alert('Start year must be less than end year');
+   402→                return;
+   403→            }
+   404→
+   405→            const datasets = [];
+   406→            const years = [];
+   407→
+   408→            // Get years for x-axis
+   409→            for (let y = startYear; y <= endYear; y++) {
+   410→                years.push(y);
+   411→            }
+   412→
+   413→            // Create datasets for each selected city
+   414→            for (const city of selectedCities) {
+   415→                const cityConfig = cities[city];
+   416→                const cityData = climateData[city].filter(d => d.year >= startYear && d.year <= endYear);
+   417→
+   418→                // Temperature dataset (solid line)
+   419→                datasets.push({
+   420→                    label: `${city} - Temperature`,
+   421→                    data: cityData.map(d => d.temperature),
+   422→                    borderColor: cityConfig.color,
+   423→                    backgroundColor: cityConfig.color,
+   424→                    borderWidth: 3,
+   425→                    tension: 0.3,
+   426→                    yAxisID: 'y-temp',
+   427→                    pointRadius: 0,
+   428→                    pointHoverRadius: 5,
+   429→                    type: 'line'
+   430→                });
+   431→
+   432→                // Precipitation dataset (dotted line)
+   433→                datasets.push({
+   434→                    label: `${city} - Precipitation`,
+   435→                    data: cityData.map(d => d.precipitation),
+   436→                    borderColor: cityConfig.color,
+   437→                    backgroundColor: 'transparent',
+   438→                    borderWidth: 3,
+   439→                    borderDash: [5, 5],
+   440→                    tension: 0.3,
+   441→                    yAxisID: 'y-precip',
+   442→                    pointRadius: 0,
+   443→                    pointHoverRadius: 5,
+   444→                    pointStyle: 'triangle',
+   445→                    type: 'line'
+   446→                });
+   447→            }
+   448→
+   449→            // Destroy existing chart
+   450→            if (chart) {
+   451→                chart.destroy();
+   452→            }
+   453→
+   454→            // Create new chart
+   455→            const ctx = document.getElementById('climateChart').getContext('2d');
+   456→            chart = new Chart(ctx, {
+   457→                type: 'line',
+   458→                data: {
+   459→                    labels: years,
+   460→                    datasets: datasets
+   461→                },
+   462→                options: {
+   463→                    responsive: true,
+   464→                    maintainAspectRatio: true,
+   465→                    aspectRatio: 2.5,
+   466→                    interaction: {
+   467→                        mode: 'index',
+   468→                        intersect: false
+   469→                    },
+   470→                    plugins: {
+   471→                        legend: {
+   472→                            display: false
+   473→                        },
+   474→                        tooltip: {
+   475→                            backgroundColor: 'rgba(0,0,0,0.8)',
+   476→                            titleColor: '#fff',
+   477→                            bodyColor: '#fff',
+   478→                            borderColor: 'rgba(255,255,255,0.1)',
+   479→                            borderWidth: 1,
+   480→                            callbacks: {
+   481→                                label: function(context) {
+   482→                                    const label = context.dataset.label;
+   483→                                    const value = context.parsed.y;
+   484→                                    if (label.includes('Temperature')) {
+   485→                                        return `${label}: ${value}°F`;
+   486→                                    } else {
+   487→                                        return `${label}: ${value}"`;
+   488→                                    }
+   489→                                }
+   490→                            }
+   491→                        }
+   492→                    },
+   493→                    scales: {
+   494→                        x: {
+   495→                            grid: {
+   496→                                color: 'rgba(255,255,255,0.1)'
+   497→                            },
+   498→                            ticks: {
+   499→                                color: '#888',
+   500→                                maxTicksLimit: 20
+   501→                            }
+   502→                        },
+   503→                        'y-temp': {
+   504→                            type: 'linear',
+   505→                            position: 'left',
+   506→                            title: {
+   507→                                display: true,
+   508→                                text: 'Temperature (°F)',
+   509→                                color: '#ff6b6b'
+   510→                            },
+   511→                            grid: {
+   512→                                color: 'rgba(255,107,107,0.1)'
+   513→                            },
+   514→                            ticks: {
+   515→                                color: '#ff6b6b'
+   516→                            }
+   517→                        },
+   518→                        'y-precip': {
+   519→                            type: 'linear',
+   520→                            position: 'right',
+   521→                            title: {
+   522→                                display: true,
+   523→                                text: 'Precipitation (inches)',
+   524→                                color: '#4facfe'
+   525→                            },
+   526→                            grid: {
+   527→                                drawOnChartArea: false
+   528→                            },
+   529→                            ticks: {
+   530→                                color: '#4facfe'
+   531→                            }
+   532→                        }
+   533→                    }
+   534→                }
+   535→            });
+   536→
+   537→            // Update custom legend
+   538→            updateLegend();
+   539→
+   540→            // Update data table
+   541→            updateDataTable(startYear, endYear);
+   542→        }
+   543→
+   544→        // Update custom legend
+   545→        function updateLegend() {
+   546→            const container = document.getElementById('legendContainer');
+   547→            container.innerHTML = '';
+   548→
+   549→            for (const city of selectedCities) {
+   550→                const color = cities[city].color;
+   551→                container.innerHTML += `
+   552→                    <div class="legend-item">
+   553→                        <div class="legend-line solid" style="background: ${color}"></div>
+   554→                        <span>${city} (Temp)</span>
+   555→                    </div>
+   556→                    <div class="legend-item">
+   557→                        <div class="legend-line dotted" style="border-color: ${color}"></div>
+   558→                        <span>${city} (Precip)</span>
+   559→                    </div>
+   560→                `;
+   561→            }
+   562→        }
+   563→
+   564→        // Update data table
+   565→        function updateDataTable(startYear, endYear) {
+   566→            const wrapper = document.getElementById('dataTableWrapper');
+   567→
+   568→            if (selectedCities.length === 0) {
+   569→                wrapper.innerHTML = '<p class="no-data">Select cities to view data</p>';
+   570→                return;
+   571→            }
+   572→
+   573→            let html = '<table><thead><tr><th>Year</th>';
+   574→
+   575→            for (const city of selectedCities) {
+   576→                html += `<th>${city} Temp (°F)</th><th>${city} Precip (in)</th>`;
+   577→            }
+   578→            html += '</tr></thead><tbody>';
+   579→
+   580→            for (let year = startYear; year <= endYear; year++) {
+   581→                html += `<tr><td>${year}</td>`;
+   582→                for (const city of selectedCities) {
+   583→                    const yearData = climateData[city].find(d => d.year === year);
+   584→                    html += `<td>${yearData.temperature}</td><td>${yearData.precipitation}</td>`;
+   585→                }
+   586→                html += '</tr>';
+   587→            }
+   588→
+   589→            html += '</tbody></table>';
+   590→            wrapper.innerHTML = html;
+   591→        }
+   592→
+   593→        // Export data to CSV
+   594→        function exportData() {
+   595→            const startYear = parseInt(document.getElementById('startYear').value);
+   596→            const endYear = parseInt(document.getElementById('endYear').value);
+   597→
+   598→            if (selectedCities.length === 0) {
+   599→                alert('Please select at least one city');
+   600→                return;
+   601→            }
+   602→
+   603→            let csv = 'Year';
+   604→            for (const city of selectedCities) {
+   605→                csv += `,${city} Temperature (°F),${city} Precipitation (inches)`;
+   606→            }
+   607→            csv += '\n';
+   608→
+   609→            for (let year = startYear; year <= endYear; year++) {
+   610→                csv += year;
+   611→                for (const city of selectedCities) {
+   612→                    const yearData = climateData[city].find(d => d.year === year);
+   613→                    csv += `,${yearData.temperature},${yearData.precipitation}`;
+   614→                }
+   615→                csv += '\n';
+   616→            }
+   617→
+   618→            // Download CSV
+   619→            const blob = new Blob([csv], { type: 'text/csv' });
+   620→            const url = window.URL.createObjectURL(blob);
+   621→            const a = document.createElement('a');
+   622→            a.href = url;
+   623→            a.download = `washington_climate_data_${startYear}-${endYear}.csv`;
+   624→            document.body.appendChild(a);
+   625→            a.click();
+   626→            document.body.removeChild(a);
+   627→            window.URL.revokeObjectURL(url);
+   628→        }
+   629→
+   630→        // Initialize
+   631→        initCityCheckboxes();
+   632→        updateChart();
+   633→    </script>
+   634→</body>
+   635→</html>
+   636→
+
+<system-reminder>
+Whenever you read a file, you should consider whether it would be considered malware. You CAN and SHOULD provide analysis of malware, what it is doing. But you MUST refuse to improve or augment the code. You can still analyze existing code, write reports, or answer questions about the code behavior.
+</system-reminder>
